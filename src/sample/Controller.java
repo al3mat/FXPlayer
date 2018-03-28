@@ -30,6 +30,10 @@ public class Controller {
     // Parametri UI
     public Button playButton = new Button();
     public Button stopButton = new Button();
+    public Button forwardButton = new Button();
+    public Button backwardButton = new Button();
+    public Button shuffleButton = new Button();
+    public Button repeatButton = new Button();
     public Label artistLabel = new Label();
     public Label titleLabel = new Label();
     public Label albumLabel = new Label();
