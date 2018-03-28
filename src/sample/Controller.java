@@ -48,7 +48,7 @@ public class Controller {
 
 
     //Inizializziamo la sorgente audio
-    private String path = new String("/Users/lex/Music/MyMusic/Skillet - Awake/02 - Monster.mp3");
+    private String path = new String("C:\\Users\\Andrea\\Desktop\\Andrea\\02. Rock You Like A Hurricane.mp3");
     private Media source = new Media(new File(path).toURI().toString());
     private MediaPlayer player = new MediaPlayer(source);
 
