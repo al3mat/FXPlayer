@@ -11,9 +11,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.Media;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
-
 import java.io.*;
-
 import com.mpatric.mp3agic.*;
 
 
@@ -45,10 +43,37 @@ public class Controller {
     public ListView playList = new ListView();
 
     UI grafica = new UI();
+    
+   
+    
+    
+    //modifica
+    Loop loop = new Loop();
+    boolean loop_state;
+    Playlist pl = new Playlist();
+    public Button loopButton = new Button(); //da aggiungere nell'intefaccia grafica
 
 
+    //collegamento pulsante-funzione di loop
+    public void setLoopButton(ActionEvent e)
+    {
+    	if(player.getStatus().equals(loopButton))
+    	{
+    		loop.loop_state = true;
+    		loop.songs = pl.nSongs();
+    		loop.loop_start(player);
+    	}
+    	else
+    		loop.loop_state = false;
+    }
+    
+    
+    
+    
+    
+    
     //Inizializziamo la sorgente audio
-    private String path = new String("C:\\Users\\Andrea\\Desktop\\Andrea\\02. Rock You Like A Hurricane.mp3");
+    private String path = new String("src/sample/Hero.mp3");
     private Media source = new Media(new File(path).toURI().toString());
     private MediaPlayer player = new MediaPlayer(source);
 
@@ -58,7 +83,8 @@ public class Controller {
 
     Boolean gotSongTime = true;
     int totalS = 0, totalM = 0, elapsedS = 0, elapsedM = 0;
-
+    
+    
 
     public void setPlayButton(ActionEvent event) {
         if (player.getStatus() == MediaPlayer.Status.PLAYING){

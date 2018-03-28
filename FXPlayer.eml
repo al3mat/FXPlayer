@@ -4,6 +4,6 @@
 	<exclude-output/>
 	<contentEntry url="file://$MODULE_DIR$"/>
 	<levels>
-		<level name="mp3agic-0.9.1" value="project"/>
+		<level name="libs" value="project"/>
 	</levels>
 </component>

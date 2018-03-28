@@ -16,7 +16,7 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root, 400, 600));
         primaryStage.setMinHeight(350);
         primaryStage.setMinWidth(400);
-        primaryStage.setMaxWidth(400);
+        primaryStage.setMinWidth(400);
         primaryStage.show();
 
         //Finestra Equilizzatore
@@ -27,7 +27,7 @@ public class Main extends Application {
         newWindow.setScene(secondScene);
         newWindow.setX(primaryStage.getX());
         newWindow.setX(primaryStage.getY());
-        //newWindow.show();
+        newWindow.show();
     }
 
 
@@ -35,4 +35,3 @@ public class Main extends Application {
         launch(args);
     }
 }
-//push test git 
