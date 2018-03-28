@@ -7,5 +7,6 @@
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="C:/Users/Andrea/Desktop/Andrea/Università/programmazione ad oggetti/librerie/mp3agic-0.9.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/libs"/>
 	<classpathentry kind="output" path="out/production/FXPlayer"/>
 </classpath>
