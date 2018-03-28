@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollBar?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<SplitPane dividerPositions="0.0" maxHeight="-Infinity" maxWidth="400.0" minHeight="310.0" minWidth="400.0" orientation="VERTICAL" prefHeight="600.0" prefWidth="400.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+  <items>
+    <AnchorPane maxHeight="200.0" minHeight="200.0" prefHeight="200.0" style="-fx-background-image: url('/sample/img/background.jpg');">
+         <children>
+            <ImageView fx:id="trackImage" fitHeight="120.0" fitWidth="120.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+               <effect>
+                  <DropShadow height="15.0" radius="7.0" width="15.0" />
+               </effect>
+               <image>
+                  <Image url="@data/defaultcover.jpg" />
+               </image>
+            </ImageView>
+            <Label fx:id="artistLabel" text="Artista: -" textFill="#eaeaea" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="10.0">
+               <font>
+                  <Font name="Impact" size="12.0" />
+               </font>
+               <effect>
+                  <DropShadow blurType="ONE_PASS_BOX" height="15.0" radius="7.0" width="15.0" />
+               </effect></Label>
+            <Label fx:id="titleLabel" layoutX="150.0" layoutY="20.0" text="Titolo: -" textFill="#eaeaea" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="35.0">
+               <font>
+                  <Font name="Impact" size="12.0" />
+               </font>
+               <effect>
+                  <DropShadow height="15.0" radius="7.0" width="15.0" />
+               </effect></Label>
+            <Label fx:id="albumLabel" layoutX="150.0" layoutY="40.0" text="Album: -" textFill="#eaeaea" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="60.0">
+               <font>
+                  <Font name="Impact" size="12.0" />
+               </font>
+               <effect>
+                  <DropShadow height="15.0" radius="7.0" width="15.0" />
+               </effect></Label>
+            <Label fx:id="genreLabel" layoutX="150.0" layoutY="60.0" text="Genere: -" textFill="#eaeaea" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="85.0">
+               <font>
+                  <Font name="Impact" size="12.0" />
+               </font>
+               <effect>
+                  <DropShadow height="15.0" radius="7.0" width="15.0" />
+               </effect></Label>
+            <Label fx:id="yearLabel" layoutX="150.0" layoutY="80.0" text="Anno: -" textFill="#eaeaea" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="110.0">
+               <font>
+                  <Font name="Impact" size="12.0" />
+               </font>
+               <effect>
+                  <DropShadow height="15.0" radius="7.0" width="15.0" />
+               </effect></Label>
+            <Label fx:id="elapsedTimeLabel" text="0:00" textFill="#eaeaea" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="140.0">
+               <font>
+                  <Font name="Consolas" size="11.0" />
+               </font>
+               <effect>
+                  <DropShadow height="15.0" radius="7.0" width="15.0" />
+               </effect>
+            </Label>
+            <Slider fx:id="timeSlider" blendMode="DIFFERENCE" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="140.0" />
+            <Label fx:id="totalTimeLabel" layoutX="20.0" layoutY="150.0" text="0:00" textFill="#eaeaea" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="140.0">
+               <font>
+                  <Font name="Consolas" size="11.0" />
+               </font>
+               <effect>
+                  <DropShadow height="15.0" radius="7.0" width="15.0" />
+               </effect>
+            </Label>
+            <Button fx:id="playButton" blendMode="SCREEN" layoutX="181.0" layoutY="159.0" mnemonicParsing="false" onAction="#setPlayButton" prefHeight="30.0" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="165.0" />
+            <Button fx:id="stopButton" blendMode="DIFFERENCE" layoutX="191.0" layoutY="169.0" mnemonicParsing="false" onAction="#setStopButton" text="ST" AnchorPane.leftAnchor="160.0" AnchorPane.topAnchor="165.0" />
+            <Button layoutX="20.0" layoutY="175.0" mnemonicParsing="false" text="&lt;&lt;" AnchorPane.leftAnchor="110.0" AnchorPane.topAnchor="165.0" />
+            <Button layoutX="140.0" layoutY="175.0" mnemonicParsing="false" text="&gt;&gt;" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="165.0" />
+            <ToggleButton mnemonicParsing="false" text="REP" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="165.0" />
+            <ToggleButton layoutX="20.0" layoutY="175.0" mnemonicParsing="false" text="SHU" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="165.0" />
+            <Slider fx:id="volumeSlider" blendMode="DIFFERENCE" blockIncrement="1.0" majorTickUnit="50.0" orientation="VERTICAL" prefHeight="120.0" showTickMarks="true" snapToTicks="true" value="100.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="10.0" />
+         </children></AnchorPane>
+    <AnchorPane minHeight="100.0" prefHeight="390.0" style="-fx-background-color: #111111;">
+         <children>
+            <ListView fx:id="playList" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #3d3d3d;" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Button layoutX="14.0" layoutY="363.0" maxHeight="20.0" maxWidth="20.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0" text="+" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" />
+            <Button layoutX="20.0" layoutY="370.0" maxHeight="20.0" maxWidth="20.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0" text="-" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="31.0" />
+            <Label fx:id="bitrateLabel" layoutX="354.0" layoutY="379.0" text="320 Kbps" textFill="#888888" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="10.0">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Label fx:id="samplerateLabel" layoutX="283.0" layoutY="369.0" text="44100 MHz" textFill="#888888" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="65.0">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <ScrollBar layoutX="391.0" layoutY="159.0" orientation="VERTICAL" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+         </children></AnchorPane>
+  </items>
+</SplitPane>
