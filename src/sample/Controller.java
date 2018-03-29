@@ -30,8 +30,8 @@ public class Controller {
     public Button stopButton = new Button();
     public Button forwardButton = new Button();
     public Button backwardButton = new Button();
-    public Button shuffleButton = new Button();
-    public Button repeatButton = new Button();
+    //public Button shuffleButton = new Button();
+    //public Button repeatButton = new Button();
     public Label artistLabel = new Label();
     public Label titleLabel = new Label();
     public Label albumLabel = new Label();
@@ -39,7 +39,7 @@ public class Controller {
     public Label yearLabel = new Label();
     public Label totalTimeLabel = new Label();
     public Label sampleRateLabel = new Label();
-    public Label bitrateLabel = new Label();
+    public Label bitRateLabel = new Label();
     public Label elapsedTimeLabel = new Label();
     public ImageView trackImage = new ImageView();
     public Slider timeSlider = new Slider();
