@@ -49,9 +49,11 @@ public class Controller {
     
     //modifica
     Loop loop = new Loop();
-    boolean loop_state;
+    boolean loop_state, end = false;
     Playlist pl = new Playlist();
     public Button loopButton = new Button(); //da aggiungere nell'intefaccia grafica
+    int totalS_on_moving;
+
 
 
     //collegamento pulsante-funzione di loop
@@ -180,28 +182,49 @@ public class Controller {
         });
     }
 
-    public void setTrackTime(){
+
+	public void setTrackTime(){
         timeSlider.setOnMouseReleased((MouseEvent) -> {
+        	this.totalS_on_moving = this.totalM * 60 + this.totalS;
             player.stop();
             player.setStartTime(javafx.util.Duration.seconds(timeSlider.getValue()));
             System.out.println(player.getTotalDuration().toSeconds() + " " + javafx.util.Duration.seconds(timeSlider.getValue()));
             player.play();
-        });
+            totalM = this.totalS_on_moving / 60;
+            this.totalS_on_moving -= totalM * 60;
+            totalS = this.totalS_on_moving;
+        });//cerco di conservare il valore iniziale della durata del pezzo
 
        player.currentTimeProperty().addListener((obs, oldTime, newTime) -> {
-            if(!timeSlider.isValueChanging()){
+            if(!timeSlider.isValueChanging() && !end){
                 timeSlider.setValue(newTime.toSeconds());
                 elapsedS = (int)player.getCurrentTime().toSeconds();
                 elapsedM = elapsedS / 60;
-                elapsedS -= elapsedM * 60;
-
-                if (elapsedS > 9) {
-                    elapsedTimeLabel.setText(elapsedM + ":" + elapsedS);
-                } else {
-                    elapsedTimeLabel.setText(elapsedM + ":0" + elapsedS);
+                elapsedS -= elapsedM * 60;  
+                
+                System.out.println(elapsedM * 60 + elapsedS + " elapsed  " + (totalM * 60 + totalS) + " duration");
+                if((elapsedM * 60 + elapsedS) == (totalM * 60 + totalS))
+                {
+             	   System.out.println("in the if");
+             	   elapsedS = 0;
+             	   elapsedM = 0;
+             	   player.stop();
+             	   timeSlider.setValue(0);
+             	   end = true;
                 }
+                
+                printTime();
             }
         });
     }
+	
+	void printTime()
+	{
+        if (elapsedS > 9) {
+            elapsedTimeLabel.setText(elapsedM + ":" + elapsedS);
+        } else {
+            elapsedTimeLabel.setText(elapsedM + ":0" + elapsedS);
+        }
+	}
 
 }
