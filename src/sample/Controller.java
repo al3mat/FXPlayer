@@ -50,11 +50,14 @@ public class Controller {
 	public Button addSong = new Button(); 
 	public Button removeSong = new Button();
 	int position = 0;
+	boolean playlistOn = false;
 
 
 	public void addSongToPlaylist(ActionEvent e)
 	{
-		System.out.println("added title\t"+pl.names.get(0));
+		pl.addSong("C:\\Users\\Andrea\\Desktop\\Andrea\\02. Rock You Like A Hurricane.mp3");
+		pl.addSong("C:\\Users\\Andrea\\Desktop\\Andrea\\12 - From Yesterday.mp3");
+		pl.addSong("C:\\Users\\Andrea\\Desktop\\Andrea\\03 - Blue (da ba dee).mp3");
 	}
 
 	public void removeSongFromPlaylist(ActionEvent e)
@@ -65,24 +68,24 @@ public class Controller {
 			System.out.println("impossibile rimuovere canzoni: non ne sono presenti in playlist");
 	}//serve il numero della canzone->da integrare nella parte grafica, quando si seleziona
 
-	
+
 	void setBackwardButton(ActionEvent e)
 	{
 		if(player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED))
 			this.stop();
 		player = pl.nextSong(position);
 		this.playSong();
-		
+
 		System.out.println("backwarding in the playlist");
 	}
-	
+
 	void setForwardButton(ActionEvent e)
 	{
 		if(player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED))
 			this.stop();
 		player = pl.previousSong(position);
 		this.playSong();
-		
+
 		System.out.println("forwarding in the playlist");
 	}
 
@@ -109,12 +112,11 @@ public class Controller {
 	}
 
 
-
-
 	//Inizializziamo la sorgente audio
 	private String path = new String("src/sample/Hero.mp3");
 	private Media source = new Media(new File(path).toURI().toString());
 	private MediaPlayer player = new MediaPlayer(source);
+	boolean initialized = false;
 
 	//Inizializziamo i parametri per i Tag
 	private Mp3File mp3file;
@@ -125,21 +127,37 @@ public class Controller {
 
 	public void playSong()
 	{		
+		System.out.println("in playsong");
+
 		if (player.getStatus().equals(MediaPlayer.Status.PLAYING))
 		{
-			System.out.println(player.getStartTime());
+			System.out.println("caso 1");
 			player.pause();
 		} 
 		else 
 		{
 			if(player.getStatus().equals(MediaPlayer.Status.PAUSED))
-				player.play();
-			else
 			{
+				System.out.println("caso 2");
+				player.play();
+			}
+			else
+			{				
+				if(playlistOn)
+				{
+					System.out.println("caso playlistOn");
+
+					path = pl.names.get(position);
+					
+					if(!initialized)
+					player = pl.currentSong(position);
+
+					System.out.println("analizzando  "+path);
+				}
+
 				getTrackInfo();
 
-
-				System.out.println(player.getTotalDuration()+path);//problema: non trova più la durata massima della canzone e penso sia il problema nel playSong->non è il percorso
+				System.out.println(path);
 
 
 				player.play();
@@ -163,9 +181,7 @@ public class Controller {
 			}
 			else
 			{
-				player = pl.currentSong(position);
-				path = pl.names.get(position);
-				position++;
+				playlistOn = true;
 			}//sistemare: cambiare if in base alla selezione: brano singolo o playlist
 		}
 		this.playSong();
@@ -293,8 +309,23 @@ public class Controller {
 				elapsedS -= elapsedM * 60;  
 
 				if((elapsedM * 60 + elapsedS) == (totalM * 60 + totalS))
-				{
-					this.stop();
+				{	
+					if(playlistOn && position != pl.nSongs()-1)
+					{
+						position++;
+						stop();
+						player = pl.currentSong(position);
+						initialized = !initialized;
+						playSong();
+
+						System.out.println(position + " position\t total " + pl.nSongs() + " state "+ playlistOn);
+					}
+					else
+					{
+						System.out.println("metto off playlistOn");
+						this.stop();
+						playlistOn = false;
+					}
 				}
 				else
 				{
@@ -304,7 +335,7 @@ public class Controller {
 			}
 		});
 	}
-	
+
 	void stop()
 	{
 		elapsedS = 0;
@@ -317,6 +348,7 @@ public class Controller {
 			end = true;
 			player.stop();
 			System.out.println("end");
+			gotSongTime = !gotSongTime;
 		}
 	}
 
