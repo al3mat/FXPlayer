@@ -12,7 +12,9 @@ public class Loop
 	{
 		
 		if(songs == 1)
+		{
 			mp.setCycleCount(AudioClip.INDEFINITE);			
+		}
 		else
 		{
 			while(!stop)//mp.getCurrentCount() != mp.getCycleCount())

@@ -62,16 +62,16 @@ public class Controller {
 	//collegamento pulsante-funzione di loop
 	public void setRepeatButton(ActionEvent e)
 	{
-		System.out.println("pressed repete song");
-
 		loop_state= !loop_state;
 
 		if(loop_state)
 		{
 			loop.songs= 1;
-//			loop.songs = pl.nSongs();  per ora non serve
+			//			loop.songs = pl.nSongs();  per ora non serve
 			loop.loop_start(player);
 		}
+		else
+			loop.stop_loop(player);
 	}
 
 
@@ -92,16 +92,25 @@ public class Controller {
 
 
 	public void setPlayButton(ActionEvent event) {
-		if (player.getStatus() == MediaPlayer.Status.PLAYING){
+		if (player.getStatus() == MediaPlayer.Status.PLAYING)
+		{
+			System.out.println(player.getStartTime());
 			player.pause();
-		} else {
-			getTrackInfo();
-			player.play();
-			timeSlider.setMax(player.getTotalDuration().toSeconds());
-			setVolume();
-			setTrackTime();
-			grafica.setPauseIcon(playButton);
-			end = false;
+		} 
+		else 
+		{
+			if(player.getStatus() == MediaPlayer.Status.PAUSED)
+				player.play();
+			else
+			{
+				getTrackInfo();
+				player.play();
+				timeSlider.setMax(player.getTotalDuration().toSeconds());
+				setVolume();
+				setTrackTime();
+				grafica.setPauseIcon(playButton);
+				end = false;	
+			}
 		}
 	}
 
@@ -200,25 +209,31 @@ public class Controller {
 		});//cerco di conservare il valore iniziale della durata del pezzo
 
 		player.currentTimeProperty().addListener((obs, oldTime, newTime) -> {
-			if(!timeSlider.isValueChanging() && !end){
+			if(!timeSlider.isValueChanging() && !end) 
+			{
 				timeSlider.setValue(newTime.toSeconds());
 				elapsedS = (int)player.getCurrentTime().toSeconds();
 				elapsedM = elapsedS / 60;
 				elapsedS -= elapsedM * 60;  
-
-				if((elapsedM * 60 + elapsedS) == (totalM * 60 + totalS) && !loop_state)
+				
+				if((elapsedM * 60 + elapsedS) == (totalM * 60 + totalS))
 				{
-					//            	   System.out.println("in the if");
 					elapsedS = 0;
 					elapsedM = 0;
-					player.stop();
 					timeSlider.setValue(0);
 					player.setStartTime(javafx.util.Duration.seconds(0));
-					end = true;
+					
+					if(!loop_state)
+					{
+						end = true;
+						player.stop();
+						System.out.println("end");
+					}
 				}
-				
-				player.setStartTime(javafx.util.Duration.seconds(0));
-
+				else
+				{
+					player.setStartTime(player.getCurrentTime());
+				}
 				printTime();
 			}
 		});
@@ -232,5 +247,4 @@ public class Controller {
 			elapsedTimeLabel.setText(elapsedM + ":0" + elapsedS);
 		}
 	}
-
 }
