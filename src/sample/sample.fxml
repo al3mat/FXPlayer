@@ -79,8 +79,8 @@
             </Label>
             <Button fx:id="playButton" blendMode="SCREEN" layoutX="181.0" layoutY="159.0" mnemonicParsing="false" onAction="#setPlayButton" prefHeight="30.0" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="165.0" />
             <Button fx:id="stopButton" blendMode="DIFFERENCE" layoutX="191.0" layoutY="169.0" mnemonicParsing="false" onAction="#setStopButton" text="ST" AnchorPane.leftAnchor="160.0" AnchorPane.topAnchor="165.0" />
-            <Button fx:id="backwardButton" layoutX="20.0" layoutY="175.0" mnemonicParsing="false" text="&lt;&lt;" AnchorPane.leftAnchor="110.0" AnchorPane.topAnchor="165.0" />
-            <Button fx:id="forwardButton" layoutX="140.0" layoutY="175.0" mnemonicParsing="false" text="&gt;&gt;" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="165.0" />
+            <Button fx:id="backwardButton" blendMode="SCREEN" layoutX="20.0" layoutY="175.0" mnemonicParsing="false" onAction="#setBackwardButton" text="&lt;&lt;" AnchorPane.leftAnchor="110.0" AnchorPane.topAnchor="165.0" />
+            <Button fx:id="forwardButton" blendMode="SCREEN" layoutX="140.0" layoutY="175.0" mnemonicParsing="false" onAction="#setForwardButton" text="&gt;&gt;" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="165.0" />
             <Button fx:id="repeatButton" mnemonicParsing="false" onAction="#setRepeatButton" text="REP" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="165.0" />
             <ToggleButton fx:id="shuffleButton" layoutX="20.0" layoutY="175.0" mnemonicParsing="false" text="SHU" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="165.0" />
             <Slider fx:id="volumeSlider" blendMode="DIFFERENCE" blockIncrement="1.0" majorTickUnit="50.0" orientation="VERTICAL" prefHeight="120.0" showTickMarks="true" snapToTicks="true" value="100.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="10.0" />
@@ -88,8 +88,8 @@
     <AnchorPane minHeight="100.0" prefHeight="390.0" style="-fx-background-color: #111111;">
          <children>
             <ListView fx:id="playList" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #3d3d3d;" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-            <Button layoutX="14.0" layoutY="363.0" maxHeight="20.0" maxWidth="20.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0" text="+" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" />
-            <Button layoutX="20.0" layoutY="370.0" maxHeight="20.0" maxWidth="20.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0" text="-" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="31.0" />
+            <Button fx:id="addSong" blendMode="SCREEN" layoutX="14.0" layoutY="363.0" maxHeight="20.0" maxWidth="20.0" mnemonicParsing="false" onAction="#addSongToPlaylist" prefHeight="20.0" prefWidth="20.0" text="+" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" />
+            <Button fx:id="removeSong" blendMode="SCREEN" layoutX="20.0" layoutY="370.0" maxHeight="20.0" maxWidth="20.0" mnemonicParsing="false" onAction="#removeSongFromPlaylist" prefHeight="20.0" prefWidth="20.0" text="-" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="31.0" />
             <Label fx:id="bitRateLabel" layoutX="354.0" layoutY="379.0" text="320 Kbps" textFill="#888888" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="10.0">
                <font>
                   <Font size="10.0" />

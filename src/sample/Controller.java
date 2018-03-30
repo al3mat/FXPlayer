@@ -15,9 +15,6 @@ import java.io.*;
 import com.mpatric.mp3agic.*;
 
 
-
-
-
 public class Controller {
 
 	// InputStream input = getClass().getResourceAsStream("C:\\Users\\LeX\\Desktop\\FXPlayer\\pause.png");
@@ -30,7 +27,6 @@ public class Controller {
 	public Button stopButton = new Button();
 	public Button forwardButton = new Button();
 	public Button backwardButton = new Button();
-	//public Button shuffleButton = new Button();
 	public Button repeatButton = new Button();
 	public Label artistLabel = new Label();
 	public Label titleLabel = new Label();
@@ -45,18 +41,56 @@ public class Controller {
 	public Slider timeSlider = new Slider();
 	public Slider volumeSlider = new Slider();
 	public ListView playList = new ListView();
+	//public Button shuffleButton = new Button();
 
 	UI grafica = new UI();
 
 
+	//aggiungo bottoni per gestire la playlist
+	public Button addSong = new Button(); 
+	public Button removeSong = new Button();
+	int position = 0;
 
+
+	public void addSongToPlaylist(ActionEvent e)
+	{
+		System.out.println("added title\t"+pl.names.get(0));
+	}
+
+	public void removeSongFromPlaylist(ActionEvent e)
+	{
+		if(pl.nSongs() != 0)
+			pl.removeSong(0, 0);
+		else
+			System.out.println("impossibile rimuovere canzoni: non ne sono presenti in playlist");
+	}//serve il numero della canzone->da integrare nella parte grafica, quando si seleziona
+
+	
+	void setBackwardButton(ActionEvent e)
+	{
+		if(player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED))
+			this.stop();
+		player = pl.nextSong(position);
+		this.playSong();
+		
+		System.out.println("backwarding in the playlist");
+	}
+	
+	void setForwardButton(ActionEvent e)
+	{
+		if(player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED))
+			this.stop();
+		player = pl.previousSong(position);
+		this.playSong();
+		
+		System.out.println("forwarding in the playlist");
+	}
 
 	//modifica
 	Loop loop = new Loop();
 	boolean loop_state, end = false;
 	Playlist pl = new Playlist();
 	int totalS_on_moving;
-
 
 
 	//collegamento pulsante-funzione di loop
@@ -86,24 +120,28 @@ public class Controller {
 	private Mp3File mp3file;
 	private ID3v2 id3v2Tag;
 
-	Boolean gotSongTime = true;
+	Boolean gotSongTime = true;												//cambiare quando si avanza di una canzone nella playlist 
 	int totalS = 0, totalM = 0, elapsedS = 0, elapsedM = 0;
 
-
-
-	public void setPlayButton(ActionEvent event) {
-		if (player.getStatus() == MediaPlayer.Status.PLAYING)
+	public void playSong()
+	{		
+		if (player.getStatus().equals(MediaPlayer.Status.PLAYING))
 		{
 			System.out.println(player.getStartTime());
 			player.pause();
 		} 
 		else 
 		{
-			if(player.getStatus() == MediaPlayer.Status.PAUSED)
+			if(player.getStatus().equals(MediaPlayer.Status.PAUSED))
 				player.play();
 			else
 			{
 				getTrackInfo();
+
+
+				System.out.println(player.getTotalDuration()+path);//problema: non trova più la durata massima della canzone e penso sia il problema nel playSong->non è il percorso
+
+
 				player.play();
 				timeSlider.setMax(player.getTotalDuration().toSeconds());
 				setVolume();
@@ -114,8 +152,29 @@ public class Controller {
 		}
 	}
 
+
+	public void setPlayButton(ActionEvent event) 
+	{
+		if(!player.getStatus().equals(MediaPlayer.Status.PLAYING) && !player.getStatus().equals(MediaPlayer.Status.PAUSED))
+		{
+			if(pl.nSongs() == 0)
+			{
+				System.out.println("no songs in playlist, opened file\t" + path);
+			}
+			else
+			{
+				player = pl.currentSong(position);
+				path = pl.names.get(position);
+				position++;
+			}//sistemare: cambiare if in base alla selezione: brano singolo o playlist
+		}
+		this.playSong();
+	}
+
 	public void setStopButton(ActionEvent event) {
-		if (player.getStatus() == MediaPlayer.Status.PLAYING || player.getStatus() == MediaPlayer.Status.PAUSED){
+
+		if (player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED))
+		{
 			player.stop();
 			player.setStartTime(javafx.util.Duration.seconds(0));
 			timeSlider.setValue(0);
@@ -125,47 +184,64 @@ public class Controller {
 		}
 	}
 
-	public void getTrackInfo() {
+	public void getTrackInfo() 
+	{
 
 		//Calcoliamo la durata della canzone (timeM : timeS)
 		//DA RIFARE CON LA PLAYLIST
-		if (gotSongTime){
+		if (gotSongTime)
+		{
 			totalS = (int)player.getTotalDuration().toSeconds();
+
 			totalM = totalS / 60;
 			totalS -= totalM * 60;
 			gotSongTime=false;
 
-			if (totalS > 9) {
+			if (totalS > 9) 
+			{
 				totalTimeLabel.setText(totalM + ":" + totalS);
-			} else {
+			} 
+			else 
+			{
 				totalTimeLabel.setText(totalM + ":0" + totalS);
 			}
 		}
 
 		//Apriamo il file audio e leggiamo i tag
-		try {
+		try 
+		{
 			mp3file = new Mp3File(path);
-		} catch (IOException ie){
+		} 
+		catch (IOException ie)
+		{
 			ie.printStackTrace();
-		} catch (UnsupportedTagException ut){
+		}
+		catch (UnsupportedTagException ut)
+		{
 			ut.printStackTrace();
-		} catch (InvalidDataException id){
+		}
+		catch (InvalidDataException id)
+		{
 			id.printStackTrace();
 		}
+
 		id3v2Tag = mp3file.getId3v2Tag();
 
 		//Estraiamo la cover dalla traccia
 		byte[] imageData = id3v2Tag.getAlbumImage();
 		if (imageData != null) {
 			RandomAccessFile file;
-			try {
+			try
+			{
 				file = new RandomAccessFile("src/sample/data/albumcover.jpg", "rw");
 				file.write(imageData);
 				file.close();
 				FileInputStream imgSrc = new FileInputStream("src/sample/data/albumcover.jpg");
 				Image img = new Image(imgSrc);
 				trackImage.setImage(img);
-			} catch (IOException e){
+			}
+			catch (IOException e)
+			{
 				e.printStackTrace();
 			}
 		}
@@ -215,20 +291,10 @@ public class Controller {
 				elapsedS = (int)player.getCurrentTime().toSeconds();
 				elapsedM = elapsedS / 60;
 				elapsedS -= elapsedM * 60;  
-				
+
 				if((elapsedM * 60 + elapsedS) == (totalM * 60 + totalS))
 				{
-					elapsedS = 0;
-					elapsedM = 0;
-					timeSlider.setValue(0);
-					player.setStartTime(javafx.util.Duration.seconds(0));
-					
-					if(!loop_state)
-					{
-						end = true;
-						player.stop();
-						System.out.println("end");
-					}
+					this.stop();
 				}
 				else
 				{
@@ -238,12 +304,30 @@ public class Controller {
 			}
 		});
 	}
+	
+	void stop()
+	{
+		elapsedS = 0;
+		elapsedM = 0;
+		timeSlider.setValue(0);
+		player.setStartTime(javafx.util.Duration.seconds(0));
+
+		if(!loop_state)
+		{
+			end = true;
+			player.stop();
+			System.out.println("end");
+		}
+	}
 
 	void printTime()
 	{
-		if (elapsedS > 9) {
+		if (elapsedS > 9)
+		{
 			elapsedTimeLabel.setText(elapsedM + ":" + elapsedS);
-		} else {
+		}
+		else 
+		{
 			elapsedTimeLabel.setText(elapsedM + ":0" + elapsedS);
 		}
 	}
