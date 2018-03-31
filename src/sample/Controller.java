@@ -66,7 +66,7 @@ public class Controller {
 	private Mp3File mp3file;
 	private ID3v2 id3v2Tag;
 
-	boolean gotSongTime = true, shuffleOn = true;												//cambiare quando si avanza di una canzone nella playlist 
+	boolean gotSongTime = true, shuffleOn = false;												//cambiare quando si avanza di una canzone nella playlist 
 	int totalS = 0, totalM = 0, elapsedS = 0, elapsedM = 0;
 
 	Loop loop = new Loop();
@@ -208,7 +208,8 @@ public class Controller {
 			{
 				playlistOn = true;
 
-				this.randomGenerator();
+				if(shuffleOn)
+					this.randomGenerator();
 
 			}//sistemare: cambiare if in base alla selezione: brano singolo o playlist
 		}																											//controllare la correttezza di shuffle
@@ -389,11 +390,17 @@ public class Controller {
 								position = 0;
 							else
 							{
-								this.stop();
-								this.randomGenerator();
-								System.out.println("ultimo brano in pl: generato il numero random\t"+position);
-								player = pl.currentSong(position);
-								this.playSong();
+								if(!shuffleOn)
+								{
+									this.stop();	
+								}
+								else
+								{	
+									this.randomGenerator();
+									System.out.println("ultimo brano in pl: generato il numero random\t"+position);
+									player = pl.currentSong(position);
+									this.playSong();
+								}
 							}
 
 							if(!loop_state)
