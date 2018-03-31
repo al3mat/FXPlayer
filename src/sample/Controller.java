@@ -12,6 +12,8 @@ import javafx.scene.media.Media;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import java.io.*;
+import java.util.Random;
+
 import com.mpatric.mp3agic.*;
 
 
@@ -41,7 +43,7 @@ public class Controller {
 	public Slider timeSlider = new Slider();
 	public Slider volumeSlider = new Slider();
 	public ListView playList = new ListView();
-	//public Button shuffleButton = new Button();
+	//	public Button shuffleButton = new Button();
 
 	UI grafica = new UI();
 	byte[] imageData;
@@ -50,8 +52,9 @@ public class Controller {
 	//aggiungo bottoni per gestire la playlist
 	public Button addSong = new Button(); 
 	public Button removeSong = new Button();
-	int position = 0;
+	int position = 0, oldPosition = -1;
 	boolean playlistOn = false;
+	Random rand = new Random();
 
 	//Inizializziamo la sorgente audio
 	private String path = new String("src/sample/Hero.mp3");
@@ -63,7 +66,7 @@ public class Controller {
 	private Mp3File mp3file;
 	private ID3v2 id3v2Tag;
 
-	Boolean gotSongTime = true;												//cambiare quando si avanza di una canzone nella playlist 
+	boolean gotSongTime = true, shuffleOn = true;												//cambiare quando si avanza di una canzone nella playlist 
 	int totalS = 0, totalM = 0, elapsedS = 0, elapsedM = 0;
 
 	Loop loop = new Loop();
@@ -75,11 +78,14 @@ public class Controller {
 
 	public void addSongToPlaylist(ActionEvent e)
 	{
+		pl.addSong("C:\\Users\\Andrea\\Desktop\\Andrea\\02. Rock You Like A Hurricane.mp3");
+		pl.addSong("C:\\Users\\Andrea\\Desktop\\Andrea\\12 - From Yesterday.mp3");
+		pl.addSong("C:\\Users\\Andrea\\Desktop\\Andrea\\03 - Blue (da ba dee).mp3");
 		//aggiungere sistema grafico per aggiungere canzoni alla playlist
 	}
 
-	
-	
+
+
 	public void removeSongFromPlaylist(ActionEvent e)
 	{
 		if(pl.nSongs() != 0)
@@ -93,7 +99,14 @@ public class Controller {
 	{
 		if(player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED))
 			this.stop();
-		player = pl.nextSong(position);
+
+		if(shuffleOn)
+		{
+			this.randomGenerator();
+		}
+		else
+			player = pl.previousSong(position);
+
 		this.playSong();
 
 		System.out.println("backwarding in the playlist");
@@ -103,10 +116,22 @@ public class Controller {
 	{
 		if(player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED))
 			this.stop();
-		player = pl.previousSong(position);
+
+		if(shuffleOn)
+		{
+			this.randomGenerator();
+		}
+		else
+			player = pl.nextSong(position);
+
 		this.playSong();
 
 		System.out.println("forwarding in the playlist");
+	}
+
+	public void setShuffleButton(ActionEvent e)
+	{
+		shuffleOn = !shuffleOn;
 	}
 
 	//collegamento pulsante-funzione di loop
@@ -152,7 +177,7 @@ public class Controller {
 				if(playlistOn)
 				{
 					path = pl.names.get(position);
-					
+
 					System.out.println("riproduzione\t"+path+"\talla posizione "+position);
 
 					player = pl.currentSong(position);
@@ -182,8 +207,11 @@ public class Controller {
 			else
 			{
 				playlistOn = true;
+
+				this.randomGenerator();
+
 			}//sistemare: cambiare if in base alla selezione: brano singolo o playlist
-		}
+		}																											//controllare la correttezza di shuffle
 		this.playSong();
 	}
 
@@ -227,6 +255,7 @@ public class Controller {
 		try 
 		{
 			mp3file = new Mp3File(path);
+			System.out.println(path);
 		} 
 		catch (IOException ie)
 		{
@@ -319,31 +348,53 @@ public class Controller {
 
 				if((elapsedM * 60 + elapsedS) == (totalM * 60 + totalS))
 				{	
-					if(playlistOn && position != pl.nSongs()-1 )// && !loop_state)
+					if(playlistOn && position != pl.nSongs()-1 )
 					{
-						position++;
+						System.out.println("chiamata a stop non in ultima canzone");
 						this.stop();
+
+						if(!shuffleOn)
+							position++;
+						else
+						{
+							this.randomGenerator();
+							System.out.println("generato il numero random\t"+position);
+						}
+
 						player = pl.currentSong(position);
-
-						//						if(!initialized)
-						//							initialized = !initialized;
-
 						playSong();
-
-						System.out.println(position + " position\t total " + pl.nSongs() + " state "+ playlistOn);
 					}
 					else
 					{
 						if(loop_state && playlistOn && (position == pl.nSongs()-1))
 						{
-							position = 0;
+							if(!shuffleOn)
+								position = 0;
+							else
+							{
+								this.randomGenerator();
+								System.out.println("ultimo brano in playlist: generato il numero random\t"+position);
+							}
+
 							this.stop();
 							player = pl.currentSong(position);
 							this.playSong();
 						}				
 						else
 						{
+							System.out.println("ultimo caso di stop");
 							this.stop();
+
+							if(!shuffleOn)
+								position = 0;
+							else
+							{
+								this.stop();
+								this.randomGenerator();
+								System.out.println("ultimo brano in pl: generato il numero random\t"+position);
+								player = pl.currentSong(position);
+								this.playSong();
+							}
 
 							if(!loop_state)
 							{
@@ -369,23 +420,29 @@ public class Controller {
 		timeSlider.setValue(0);
 		player.setStartTime(javafx.util.Duration.seconds(0));
 
-		if(!loop_state)
+		if(!loop_state && !shuffleOn)
 		{
 			end = true;
 			player.stop();
 			System.out.println("end");
-			gotSongTime = !gotSongTime;
+
+			if(!gotSongTime)
+				gotSongTime = !gotSongTime;
+			System.out.println("stop case 1");
 		}
 		else
 		{
-			if(loop_state && this.playlistOn)
+			if((loop_state && this.playlistOn)||shuffleOn)
 			{
 				player.stop();
-				gotSongTime = !gotSongTime;	
-			}
 
+				if(!gotSongTime)
+					gotSongTime = !gotSongTime;
+				System.out.println("stop case 2");
+			}
 		}
 	}
+
 
 	void printTime()
 	{
@@ -397,5 +454,14 @@ public class Controller {
 		{
 			elapsedTimeLabel.setText(elapsedM + ":0" + elapsedS);
 		}
+	}
+
+	void randomGenerator()
+	{
+		this.oldPosition = position;
+
+		do {
+			position = rand.nextInt(pl.nSongs());
+		}while(position > pl.nSongs()-1 || position == oldPosition);
 	}
 }

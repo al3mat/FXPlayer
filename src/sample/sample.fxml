@@ -79,8 +79,8 @@
             </Label>
             <Button fx:id="playButton" blendMode="SCREEN" layoutX="181.0" layoutY="159.0" mnemonicParsing="false" onAction="#setPlayButton" prefHeight="30.0" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="165.0" />
             <Button fx:id="stopButton" blendMode="DIFFERENCE" layoutX="191.0" layoutY="169.0" mnemonicParsing="false" onAction="#setStopButton" text="ST" AnchorPane.leftAnchor="160.0" AnchorPane.topAnchor="165.0" />
-            <Button fx:id="backwardButton" blendMode="SCREEN" layoutX="20.0" layoutY="175.0" mnemonicParsing="false" onAction="#setBackwardButton" text="&lt;&lt;" AnchorPane.leftAnchor="110.0" AnchorPane.topAnchor="165.0" />
-            <Button fx:id="forwardButton" blendMode="SCREEN" layoutX="140.0" layoutY="175.0" mnemonicParsing="false" onAction="#setForwardButton" text="&gt;&gt;" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="165.0" />
+            <Button fx:id="backwardButton" blendMode="SCREEN" layoutX="20.0" layoutY="175.0" mnemonicParsing="false"  text="&lt;&lt;" AnchorPane.leftAnchor="110.0" AnchorPane.topAnchor="165.0" />
+            <Button fx:id="forwardButton" blendMode="SCREEN" layoutX="140.0" layoutY="175.0" mnemonicParsing="false"  text="&gt;&gt;" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="165.0" />
             <Button fx:id="repeatButton" mnemonicParsing="false" onAction="#setRepeatButton" text="REP" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="165.0" />
             <ToggleButton fx:id="shuffleButton" layoutX="20.0" layoutY="175.0" mnemonicParsing="false" text="SHU" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="165.0" />
             <Slider fx:id="volumeSlider" blendMode="DIFFERENCE" blockIncrement="1.0" majorTickUnit="50.0" orientation="VERTICAL" prefHeight="120.0" showTickMarks="true" snapToTicks="true" value="100.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="10.0" />
