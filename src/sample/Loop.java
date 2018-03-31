@@ -4,46 +4,38 @@ import javafx.scene.media.MediaPlayer;
 
 public class Loop 
 {
-	int songs, cycles, i, to_wait;
-	Playlist p;
+	int songs, cycles, i, to_wait, current, first;
 	boolean stop = false;
-
-	void loop_start(MediaPlayer mp)
+	MediaPlayer mp;
+	
+	
+	
+	
+	void loop_selection()
 	{
-		
 		if(songs == 1)
-		{
-			mp.setCycleCount(AudioClip.INDEFINITE);			
-		}
+			this.loop_start_single(mp);
 		else
-		{
-			while(!stop)//mp.getCurrentCount() != mp.getCycleCount())
-			{
-				/*				
-				if(!loop_state)
-				{
-					this.stop_loop(mp);
-					break;
-				}
-				else
-				{
-				 */				
-				for(i = 0; i < p.pl.size(); i++)
-				 {
-					 p.currentSong(i).play();
-					 to_wait = (int) p.currentSong(i).getTotalDuration().toSeconds();
+			this.loop_start_playlist();
+	}
 
-					 try 
-					 {
-						 wait(to_wait);
-					 } 
-					 catch (InterruptedException e) 
-					 {
-						 e.printStackTrace();
-					 }
-				 }
-			}//riproduce una volta tutta la playlist
+	
+	void loop_start_single(MediaPlayer mp)
+	{
+		mp.setCycleCount(AudioClip.INDEFINITE);			
+	}
+
+
+	int loop_start_playlist()
+	{
+		System.out.println("nel metodo della playlist");
+		
+		while(!stop)
+		{				
+			if(current == songs)
+				return first;
 		}
+		return current;
 	}
 
 

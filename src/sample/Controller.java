@@ -44,6 +44,7 @@ public class Controller {
 	//public Button shuffleButton = new Button();
 
 	UI grafica = new UI();
+	byte[] imageData;
 
 
 	//aggiungo bottoni per gestire la playlist
@@ -52,14 +53,32 @@ public class Controller {
 	int position = 0;
 	boolean playlistOn = false;
 
+	//Inizializziamo la sorgente audio
+	private String path = new String("src/sample/Hero.mp3");
+	private Media source = new Media(new File(path).toURI().toString());
+	private MediaPlayer player = new MediaPlayer(source);
+	boolean initialized = false;
+
+	//Inizializziamo i parametri per i Tag
+	private Mp3File mp3file;
+	private ID3v2 id3v2Tag;
+
+	Boolean gotSongTime = true;												//cambiare quando si avanza di una canzone nella playlist 
+	int totalS = 0, totalM = 0, elapsedS = 0, elapsedM = 0;
+
+	Loop loop = new Loop();
+	boolean loop_state = false, end = false, pl_initialized = false;
+	Playlist pl = new Playlist();
+	int totalS_on_moving;
+
+
 
 	public void addSongToPlaylist(ActionEvent e)
 	{
-		pl.addSong("C:\\Users\\Andrea\\Desktop\\Andrea\\02. Rock You Like A Hurricane.mp3");
-		pl.addSong("C:\\Users\\Andrea\\Desktop\\Andrea\\12 - From Yesterday.mp3");
-		pl.addSong("C:\\Users\\Andrea\\Desktop\\Andrea\\03 - Blue (da ba dee).mp3");
+		//aggiungere sistema grafico per aggiungere canzoni alla playlist
 	}
 
+	
 	public void removeSongFromPlaylist(ActionEvent e)
 	{
 		if(pl.nSongs() != 0)
@@ -89,41 +108,31 @@ public class Controller {
 		System.out.println("forwarding in the playlist");
 	}
 
-	//modifica
-	Loop loop = new Loop();
-	boolean loop_state, end = false;
-	Playlist pl = new Playlist();
-	int totalS_on_moving;
-
-
 	//collegamento pulsante-funzione di loop
 	public void setRepeatButton(ActionEvent e)
 	{
-		loop_state= !loop_state;
+		loop_state = !loop_state;
 
 		if(loop_state)
 		{
-			loop.songs= 1;
-			//			loop.songs = pl.nSongs();  per ora non serve
-			loop.loop_start(player);
+			if(loop.songs == 1)
+				loop.mp = player;
+			else
+			{
+				this.playlistOn = true;
+			}//controllare che si possa fare e non salti canzoni a causa dell'incremento anche più in basso
+
+
+			//			loop.songs= 1;
+
+			if(loop.songs == 1)
+				loop.loop_selection();
 		}
 		else
 			loop.stop_loop(player);
 	}
 
 
-	//Inizializziamo la sorgente audio
-	private String path = new String("src/sample/Hero.mp3");
-	private Media source = new Media(new File(path).toURI().toString());
-	private MediaPlayer player = new MediaPlayer(source);
-	boolean initialized = false;
-
-	//Inizializziamo i parametri per i Tag
-	private Mp3File mp3file;
-	private ID3v2 id3v2Tag;
-
-	Boolean gotSongTime = true;												//cambiare quando si avanza di una canzone nella playlist 
-	int totalS = 0, totalM = 0, elapsedS = 0, elapsedM = 0;
 
 	public void playSong()
 	{		
@@ -143,14 +152,12 @@ public class Controller {
 				{
 					path = pl.names.get(position);
 					
-					if(!initialized)
+					System.out.println("riproduzione\t"+path+"\talla posizione "+position);
+
 					player = pl.currentSong(position);
 				}
 
 				getTrackInfo();
-
-				System.out.println(path);
-
 
 				player.play();
 				timeSlider.setMax(player.getTotalDuration().toSeconds());
@@ -236,8 +243,10 @@ public class Controller {
 		id3v2Tag = mp3file.getId3v2Tag();
 
 		//Estraiamo la cover dalla traccia
-		byte[] imageData = id3v2Tag.getAlbumImage();
-		if (imageData != null) {
+		imageData = id3v2Tag.getAlbumImage();
+
+		if (imageData != null) 
+		{
 			RandomAccessFile file;
 			try
 			{
@@ -262,10 +271,13 @@ public class Controller {
 		yearLabel.setText("Anno: " + id3v2Tag.getYear());
 	}
 
-	public void setVolume(){
-		volumeSlider.valueProperty().addListener(new InvalidationListener() {
+	public void setVolume()
+	{
+		volumeSlider.valueProperty().addListener(new InvalidationListener() 
+		{
 			@Override
-			public void invalidated(Observable observable) {
+			public void invalidated(Observable observable)
+			{
 				if (volumeSlider.isValueChanging()){
 					player.setVolume(volumeSlider.getValue()/100);
 				}
@@ -273,26 +285,30 @@ public class Controller {
 		});
 	}
 
-	public void setBalance(){
-		volumeSlider.setOnDragExited((Event) -> {
+	public void setBalance()
+	{
+		volumeSlider.setOnDragExited((Event) -> 
+		{
 			//Da fare dopo la UI
 		});
 	}
 
 
-	public void setTrackTime(){
-		timeSlider.setOnMouseReleased((MouseEvent) -> {
+	public void setTrackTime()
+	{
+		timeSlider.setOnMouseReleased((MouseEvent) -> 
+		{
 			this.totalS_on_moving = this.totalM * 60 + this.totalS;
 			player.stop();
 			player.setStartTime(javafx.util.Duration.seconds(timeSlider.getValue()));
-			//            System.out.println(player.getTotalDuration().toSeconds() + " " + javafx.util.Duration.seconds(timeSlider.getValue()));
 			player.play();
 			totalM = this.totalS_on_moving / 60;
 			this.totalS_on_moving -= totalM * 60;
 			totalS = this.totalS_on_moving;
 		});//cerco di conservare il valore iniziale della durata del pezzo
 
-		player.currentTimeProperty().addListener((obs, oldTime, newTime) -> {
+		player.currentTimeProperty().addListener((obs, oldTime, newTime) -> 
+		{
 			if(!timeSlider.isValueChanging() && !end) 
 			{
 				timeSlider.setValue(newTime.toSeconds());
@@ -302,24 +318,38 @@ public class Controller {
 
 				if((elapsedM * 60 + elapsedS) == (totalM * 60 + totalS))
 				{	
-					if(playlistOn && position != pl.nSongs()-1 && !loop_state)
+					if(playlistOn && position != pl.nSongs()-1 )// && !loop_state)
 					{
 						position++;
-						stop();
+						this.stop();
 						player = pl.currentSong(position);
-						initialized = !initialized;
+
+						//						if(!initialized)
+						//							initialized = !initialized;
+
 						playSong();
 
 						System.out.println(position + " position\t total " + pl.nSongs() + " state "+ playlistOn);
 					}
 					else
 					{
-						this.stop();
-						
-						if(!loop_state)
+						if(loop_state && playlistOn && (position == pl.nSongs()-1))
 						{
-							playlistOn = false;							
+							position = 0;
+							this.stop();
+							player = pl.currentSong(position);
+							this.playSong();
+						}				
+						else
+						{
+							this.stop();
+
+							if(!loop_state)
+							{
+								playlistOn = false;							
+							}							
 						}
+
 					}
 				}
 				else
@@ -344,6 +374,15 @@ public class Controller {
 			player.stop();
 			System.out.println("end");
 			gotSongTime = !gotSongTime;
+		}
+		else
+		{
+			if(loop_state && this.playlistOn)
+			{
+				player.stop();
+				gotSongTime = !gotSongTime;	
+			}
+
 		}
 	}
 
