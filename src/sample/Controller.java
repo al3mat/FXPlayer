@@ -127,32 +127,24 @@ public class Controller {
 
 	public void playSong()
 	{		
-		System.out.println("in playsong");
-
 		if (player.getStatus().equals(MediaPlayer.Status.PLAYING))
 		{
-			System.out.println("caso 1");
 			player.pause();
 		} 
 		else 
 		{
 			if(player.getStatus().equals(MediaPlayer.Status.PAUSED))
 			{
-				System.out.println("caso 2");
 				player.play();
 			}
 			else
 			{				
 				if(playlistOn)
 				{
-					System.out.println("caso playlistOn");
-
 					path = pl.names.get(position);
 					
 					if(!initialized)
 					player = pl.currentSong(position);
-
-					System.out.println("analizzando  "+path);
 				}
 
 				getTrackInfo();
@@ -310,7 +302,7 @@ public class Controller {
 
 				if((elapsedM * 60 + elapsedS) == (totalM * 60 + totalS))
 				{	
-					if(playlistOn && position != pl.nSongs()-1)
+					if(playlistOn && position != pl.nSongs()-1 && !loop_state)
 					{
 						position++;
 						stop();
@@ -322,9 +314,12 @@ public class Controller {
 					}
 					else
 					{
-						System.out.println("metto off playlistOn");
 						this.stop();
-						playlistOn = false;
+						
+						if(!loop_state)
+						{
+							playlistOn = false;							
+						}
 					}
 				}
 				else
