@@ -79,6 +79,7 @@ public class Controller {
 	}
 
 	
+	
 	public void removeSongFromPlaylist(ActionEvent e)
 	{
 		if(pl.nSongs() != 0)
