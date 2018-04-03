@@ -38,7 +38,7 @@ public class Loop
 		}
 		return current;
 	}
-
+//se non si riesce a spostare di qui il loop della playlist, eliminare la selezione e questo metodo
 
 
 	void stop_loop(MediaPlayer mp)
