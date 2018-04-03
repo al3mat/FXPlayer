@@ -8,37 +8,39 @@ public class Loop
 	int songs, cycles, i, to_wait, current, first;
 	boolean stop = false;
 	MediaPlayer mp;
-	
-	
-	
-	
-	void loop_selection()
+
+
+	boolean loopCall(boolean loop_state, MediaPlayer player)
 	{
-		if(songs == 1)
-			this.loop_start_single(mp);
+		if(loop_state)
+		{
+			if(songs == 1)
+			{
+				this.mp = player;
+				this.loop_start_single(mp);
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
 		else
-			this.loop_start_playlist();
+		{
+			this.stop_loop(player);
+			return false;
+		}
+
 	}
 
-	
+
+
 	void loop_start_single(MediaPlayer mp)
 	{
 		mp.setCycleCount(AudioClip.INDEFINITE);			
 	}
 
 
-	int loop_start_playlist()
-	{
-		System.out.println("nel metodo della playlist");
-		
-		while(!stop)
-		{				
-			if(current == songs)
-				return first;
-		}
-		return current;
-	}
-//se non si riesce a spostare di qui il loop della playlist, eliminare la selezione e questo metodo
 
 
 	void stop_loop(MediaPlayer mp)
@@ -48,7 +50,7 @@ public class Loop
 
 		stop = true;
 
-		if(!mp.getCurrentTime().equals(mp.getTotalDuration()))//controllare se arriva ad essere uguale
+		if(!mp.getCurrentTime().equals(mp.getTotalDuration()))
 		{
 			mp.setCycleCount(0);
 

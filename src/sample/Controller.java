@@ -1,7 +1,5 @@
 package sample;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -63,10 +61,8 @@ public class Controller {
 	//Inizializziamo i parametri per i Tag
 	private Mp3File mp3file;
 	private ID3v2 id3v2Tag;
-
 	boolean gotSongTime = true, shuffleOn = false;												//cambiare quando si avanza di una canzone nella playlist 
 	int totalS = 0, totalM = 0, elapsedS = 0, elapsedM = 0;
-
 	Loop loop = new Loop();
 	boolean loop_state = false, end = false, pl_initialized = false;
 	Playlist pl = new Playlist();
@@ -88,7 +84,7 @@ public class Controller {
 
 	public void removeSongFromPlaylist(ActionEvent e)
 	{
-		if(pl.nSongs() != 0)
+		if(pl.nSongs() > 0)
 			pl.removeSong(0, 0);
 		else
 			System.out.println("impossibile rimuovere canzoni: non ne sono presenti in playlist");
@@ -146,23 +142,7 @@ public class Controller {
 	{
 		loop_state = !loop_state;
 
-		if(loop_state)
-		{
-			if(loop.songs == 1)
-				loop.mp = player;
-			else
-			{
-				this.playlistOn = true;
-			}//controllare che si possa fare e non salti canzoni a causa dell'incremento anche più in basso
-
-
-			//			loop.songs= 1;
-
-			if(loop.songs == 1)
-				loop.loop_selection();
-		}
-		else
-			loop.stop_loop(player);
+		this.playlistOn = loop.loopCall(loop_state, player);
 	}
 
 
@@ -173,7 +153,7 @@ public class Controller {
 		{
 			player.pause();
 			grafica.setPlayIcon(playButton);
-		} 
+		}
 		else 
 		{
 			if(player.getStatus().equals(MediaPlayer.Status.PAUSED))
@@ -224,7 +204,7 @@ public class Controller {
 		}																											//controllare la correttezza di shuffle
 		this.playSong();
 	}
-	
+
 
 	public void setStopButton(ActionEvent event) {
 
@@ -441,17 +421,17 @@ public class Controller {
 
 			if(!gotSongTime)
 				gotSongTime = !gotSongTime;
-			System.out.println("stop case 1");
 		}
 		else
 		{
 			if((loop_state && this.playlistOn)||shuffleOn)
 			{
 				player.stop();
+				loop_state = !loop_state;									//la funzione di loop si interrompe quando � premuto il tasto stop
+
 
 				if(!gotSongTime)
 					gotSongTime = !gotSongTime;
-				System.out.println("stop case 2");
 			}
 		}
 	}
