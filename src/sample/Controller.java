@@ -76,9 +76,6 @@ public class Controller {
 
 	public void addSongToPlaylist(ActionEvent e)
 	{
-		pl.addSong("C:\\Users\\Andrea\\Desktop\\Andrea\\02. Rock You Like A Hurricane.mp3");
-		pl.addSong("C:\\Users\\Andrea\\Desktop\\Andrea\\12 - From Yesterday.mp3");
-		pl.addSong("C:\\Users\\Andrea\\Desktop\\Andrea\\03 - Blue (da ba dee).mp3");
 
 		//aggiungere sistema grafico per aggiungere canzoni alla playlist
 	}
