@@ -3,14 +3,12 @@ package sample;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.event.ActionEvent;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.Media;
-import javafx.scene.control.Button;
-import javafx.scene.control.Slider;
+
 import java.io.*;
 import java.util.Random;
 
@@ -43,7 +41,7 @@ public class Controller {
 	public Slider timeSlider = new Slider();
 	public Slider volumeSlider = new Slider();
 	public ListView playList = new ListView();
-	//	public Button shuffleButton = new Button();
+	public ToggleButton shuffleButton = new ToggleButton();
 
 	UI grafica = new UI();
 	byte[] imageData;
@@ -75,6 +73,10 @@ public class Controller {
 	int totalS_on_moving;
 
 
+	public void initialize(){
+		grafica.setUI(playButton, stopButton, forwardButton, backwardButton, repeatButton, shuffleButton);
+	}
+
 
 	public void addSongToPlaylist(ActionEvent e)
 	{
@@ -93,24 +95,24 @@ public class Controller {
 	}//serve il numero della canzone->da integrare nella parte grafica, quando si seleziona
 
 
-	void setBackwardButton(ActionEvent e)
+	public void setBackwardButton(ActionEvent e)
 	{
-		if(player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED))
+		if(player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED)) {
 			this.stop();
-
-		if(shuffleOn)
-		{
-			this.randomGenerator();
 		}
-		else
+
+		if(shuffleOn) {
+			this.randomGenerator();
+		} else {
 			player = pl.previousSong(position);
+		}
 
 		this.playSong();
 
-		System.out.println("backwarding in the playlist");
+		System.out.println("Backwarding in the playlist");
 	}
 
-	void setForwardButton(ActionEvent e)
+	public void setForwardButton(ActionEvent e)
 	{
 		if(player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED))
 			this.stop();
@@ -124,12 +126,19 @@ public class Controller {
 
 		this.playSong();
 
-		System.out.println("forwarding in the playlist");
+		System.out.println("Forwarding in the playlist");
 	}
 
 	public void setShuffleButton(ActionEvent e)
 	{
-		shuffleOn = !shuffleOn;
+		shuffleOn = shuffleButton.isSelected();
+
+		if (shuffleButton.isSelected()){
+			grafica.setShuffleOnIcon(shuffleButton);
+		} else {
+			grafica.setShuffleOffIcon(shuffleButton);
+		}
+		System.out.println("Shuffle " + shuffleOn);
 	}
 
 	//collegamento pulsante-funzione di loop
@@ -144,7 +153,7 @@ public class Controller {
 			else
 			{
 				this.playlistOn = true;
-			}//controllare che si possa fare e non salti canzoni a causa dell'incremento anche più in basso
+			}//controllare che si possa fare e non salti canzoni a causa dell'incremento anche piÃ¹ in basso
 
 
 			//			loop.songs= 1;
@@ -163,12 +172,14 @@ public class Controller {
 		if (player.getStatus().equals(MediaPlayer.Status.PLAYING))
 		{
 			player.pause();
+			grafica.setPlayIcon(playButton);
 		} 
 		else 
 		{
 			if(player.getStatus().equals(MediaPlayer.Status.PAUSED))
 			{
 				player.play();
+				grafica.setPauseIcon(playButton);
 			}
 			else
 			{				
@@ -176,7 +187,7 @@ public class Controller {
 				{
 					path = pl.names.get(position);
 
-					System.out.println("riproduzione\t"+path+"\talla posizione "+position);
+					System.out.println("Riproduzione " + path + " alla posizione " + position);
 
 					player = pl.currentSong(position);
 				}
@@ -184,10 +195,10 @@ public class Controller {
 				getTrackInfo();
 
 				player.play();
+				grafica.setPauseIcon(playButton);
 				timeSlider.setMax(player.getTotalDuration().toSeconds());
 				setVolume();
 				setTrackTime();
-				grafica.setPauseIcon(playButton);
 				end = false;	
 			}
 		}
@@ -225,6 +236,7 @@ public class Controller {
 			gotSongTime = true;
 			elapsedS = 0;
 			elapsedM = 0;
+			grafica.setPlayIcon(playButton);
 		}
 	}
 
@@ -303,14 +315,9 @@ public class Controller {
 
 	public void setVolume()
 	{
-		volumeSlider.valueProperty().addListener(new InvalidationListener() 
-		{
-			@Override
-			public void invalidated(Observable observable)
-			{
-				if (volumeSlider.isValueChanging()){
-					player.setVolume(volumeSlider.getValue()/100);
-				}
+		volumeSlider.valueProperty().addListener(observable -> {
+			if (volumeSlider.isValueChanging()){
+				player.setVolume(volumeSlider.getValue()/100);
 			}
 		});
 	}

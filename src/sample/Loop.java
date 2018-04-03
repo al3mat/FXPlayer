@@ -60,7 +60,7 @@ public class Loop
 			{
 				e.printStackTrace();
 			}//sostituire con il wait(long) nel quale mettere il tempo rimanente
-		}//caso in cui si disattivi il loop mentre è ancora in riproduzione
+		}//caso in cui si disattivi il loop mentre Ð¸ ancora in riproduzione
 	}//impostare che, una volta finita la riproduzione, venga riprodotto il brano successivo nella playlist
 }
 

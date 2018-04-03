@@ -52,7 +52,7 @@ public class Playlist
 			System.out.println("errore: inserito un numero negativo");
 
 		return pl.get(i);
-	}//controllare, ma non credo sia così facile->sistemare il problema dell'errore
+	}//controllare, ma non credo sia cosÐ¼ facile->sistemare il problema dell'errore
 
 	
 	MediaPlayer previousSong(int i)
