@@ -8,7 +8,6 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.effect.DropShadow?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
@@ -21,9 +20,6 @@
                <effect>
                   <DropShadow height="15.0" radius="7.0" width="15.0" />
                </effect>
-               <image>
-                  <Image url="@data/defaultcover.jpg" />
-               </image>
             </ImageView>
             <Label fx:id="artistLabel" text="Artista: -" textFill="#eaeaea" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="10.0">
                <font>

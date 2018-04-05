@@ -18,6 +18,7 @@ public class UI {
     private Image repeatOffImg = new Image(getClass().getResourceAsStream("/sample/img/repeat_off.png"));
     private Image repeatOneImg = new Image(getClass().getResourceAsStream("/sample/img/repeat_1.png"));
     private Image repeatAllImg = new Image(getClass().getResourceAsStream("/sample/img/repeat_all.png"));
+    private Image albumImage = new Image(getClass().getResourceAsStream("/sample/img/defaultcover.jpg"));
 
     private ImageView pauseView = new ImageView(pauseImg);
     private ImageView playView = new ImageView(playImg);
@@ -58,13 +59,14 @@ public class UI {
         shuffleButton.setGraphic(shuffleOnView);
     }
 
-    public void setUI(Button playButton, Button stopButton, Button forwardButton, Button backwardButton, Button repeatButton, ToggleButton shuffleButton){
+    public void setUI(Button playButton, Button stopButton, Button forwardButton, Button backwardButton, Button repeatButton, ToggleButton shuffleButton, ImageView trackImage){
         playButton.setGraphic(playView);
         stopButton.setGraphic(stopView);
         backwardButton.setGraphic(backwardView);
         forwardButton.setGraphic(forwardView);
         shuffleButton.setGraphic(shuffleOffView);
         repeatButton.setGraphic(repeatOffView);
+        trackImage.setImage(albumImage);
     }
 
 

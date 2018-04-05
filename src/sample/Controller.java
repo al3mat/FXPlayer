@@ -60,7 +60,7 @@ public class Controller {
 
 
 	public void initialize(){
-		grafica.setUI(playButton, stopButton, forwardButton, backwardButton, repeatButton, shuffleButton);
+		grafica.setUI(playButton, stopButton, forwardButton, backwardButton, repeatButton, shuffleButton, trackImage);
 	}
 
 
