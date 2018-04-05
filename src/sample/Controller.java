@@ -10,15 +10,8 @@ import javafx.scene.media.Media;
 import java.io.*;
 import java.util.Random;
 
-import com.mpatric.mp3agic.*;
-
 
 public class Controller {
-
-	// InputStream input = getClass().getResourceAsStream("C:\\Users\\LeX\\Desktop\\FXPlayer\\pause.png");
-
-	// Image image = new Image(input);
-	//ImageView imageView = new ImageView(image);
 
 	// Parametri UI
 	public Button playButton = new Button();
@@ -42,7 +35,6 @@ public class Controller {
 	public ToggleButton shuffleButton = new ToggleButton();
 
 	UI grafica = new UI();
-	byte[] imageData;
 
 
 	//aggiungo bottoni per gestire la playlist
@@ -59,8 +51,6 @@ public class Controller {
 	boolean initialized = false;
 
 	//Inizializziamo i parametri per i Tag
-	private Mp3File mp3file;
-	private ID3v2 id3v2Tag;
 	boolean gotSongTime = true, shuffleOn = false;												//cambiare quando si avanza di una canzone nella playlist 
 	int totalS = 0, totalM = 0, elapsedS = 0, elapsedM = 0;
 	Loop loop = new Loop();
@@ -76,7 +66,6 @@ public class Controller {
 
 	public void addSongToPlaylist(ActionEvent e)
 	{
-
 		//aggiungere sistema grafico per aggiungere canzoni alla playlist
 	}
 
@@ -243,54 +232,13 @@ public class Controller {
 			}
 		}
 
-		//Apriamo il file audio e leggiamo i tag
-		try 
-		{
-			mp3file = new Mp3File(path);
-			System.out.println(path);
-		} 
-		catch (IOException ie)
-		{
-			ie.printStackTrace();
-		}
-		catch (UnsupportedTagException ut)
-		{
-			ut.printStackTrace();
-		}
-		catch (InvalidDataException id)
-		{
-			id.printStackTrace();
-		}
-
-		id3v2Tag = mp3file.getId3v2Tag();
-
-		//Estraiamo la cover dalla traccia
-		imageData = id3v2Tag.getAlbumImage();
-
-		if (imageData != null) 
-		{
-			RandomAccessFile file;
-			try
-			{
-				file = new RandomAccessFile("src/sample/data/albumcover.jpg", "rw");
-				file.write(imageData);
-				file.close();
-				FileInputStream imgSrc = new FileInputStream("src/sample/data/albumcover.jpg");
-				Image img = new Image(imgSrc);
-				trackImage.setImage(img);
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
-		}
-
 		//Settiamo i tag sulla UI
-		artistLabel.setText("Artista: " + id3v2Tag.getArtist());
-		titleLabel.setText("Titolo: " + id3v2Tag.getTitle());
-		albumLabel.setText("Album: " + id3v2Tag.getAlbum());
-		genreLabel.setText("Genere: " + id3v2Tag.getGenreDescription());
-		yearLabel.setText("Anno: " + id3v2Tag.getYear());
+		trackImage.setImage((Image)source.getMetadata().get("image"));
+		artistLabel.setText("Artista: " + source.getMetadata().get("artist"));
+		titleLabel.setText("Titolo: " + source.getMetadata().get("title"));
+		albumLabel.setText("Album: " + source.getMetadata().get("album"));
+		genreLabel.setText("Genere: " + source.getMetadata().get("genre"));
+		yearLabel.setText("Anno: " + source.getMetadata().get("year"));
 	}
 
 	public void setVolume()
