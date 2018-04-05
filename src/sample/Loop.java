@@ -45,7 +45,6 @@ public class Loop
 
 	void stop_loop(MediaPlayer mp)
 	{
-
 		System.out.println("nella funzione stop_loop");
 
 		stop = true;

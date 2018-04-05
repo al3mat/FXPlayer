@@ -1,13 +1,15 @@
 package sample;
 
+import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
+import javafx.scene.layout.*;
 
 public class UI {
 
-
+    //Images
     private Image pauseImg = new Image(getClass().getResourceAsStream("/sample/img/pause.png"));
     private Image playImg = new Image(getClass().getResourceAsStream("/sample/img/play.png"));
     private Image stopImg = new Image(getClass().getResourceAsStream("/sample/img/stop.png"));
@@ -20,6 +22,13 @@ public class UI {
     private Image repeatAllImg = new Image(getClass().getResourceAsStream("/sample/img/repeat_all.png"));
     private Image albumImage = new Image(getClass().getResourceAsStream("/sample/img/defaultcover.jpg"));
 
+    //Player Background
+    Image image = new Image(getClass().getResourceAsStream("/sample/img/background.jpg"));
+    BackgroundSize backgroundSize = new BackgroundSize(400, 200, true, true, true, false);
+    BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+    Background background = new Background(backgroundImage);
+
+    //ImageViews
     private ImageView pauseView = new ImageView(pauseImg);
     private ImageView playView = new ImageView(playImg);
     private ImageView stopView = new ImageView(stopImg);
@@ -30,6 +39,9 @@ public class UI {
     private ImageView repeatOffView = new ImageView(repeatOffImg);
     private ImageView repeatOneView = new ImageView(repeatOneImg);
     private ImageView repeatAllView = new ImageView(repeatAllImg);
+
+    String fontType = "Consolas";
+    Integer fontSize = 11;
 
     public void setPlayIcon(Button playButton){
         playButton.setGraphic(playView);
@@ -59,7 +71,7 @@ public class UI {
         shuffleButton.setGraphic(shuffleOnView);
     }
 
-    public void setUI(Button playButton, Button stopButton, Button forwardButton, Button backwardButton, Button repeatButton, ToggleButton shuffleButton, ImageView trackImage){
+    public void setUI(Button playButton, Button stopButton, Button forwardButton, Button backwardButton, Button repeatButton, ToggleButton shuffleButton, ImageView trackImage, AnchorPane paneControls, Label artistLabel, Label titleLabel, Label albumLabel, Label genreLabel, Label yearLabel){
         playButton.setGraphic(playView);
         stopButton.setGraphic(stopView);
         backwardButton.setGraphic(backwardView);
@@ -67,6 +79,10 @@ public class UI {
         shuffleButton.setGraphic(shuffleOffView);
         repeatButton.setGraphic(repeatOffView);
         trackImage.setImage(albumImage);
+        paneControls.setBackground(background);
+
+        //Setting font
+
     }
 
 
