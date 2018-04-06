@@ -80,17 +80,14 @@ public class Controller {
 		fs.start(new Stage());
 		added = fs.filename;
 
-        for(int i = added.size()-1; i>0; i--)
-            System.out.println(added.get(i));
-
         if(added != null)
 		{
 			//			path = added.get(position);
 
- //           System.out.println("nsongs  "+pl.nSongs() + "  posizione\t"+pos+"  added_size "+added.size()+"\tdim  "+ dim);
-			for(; pos < added.size()-dim; pos++)
+			for(pos = 0; pos < added.size()-dim; pos++)
 			{
-				pl.addSong(added.get(pos), pos);
+				pl.addSong(added.get(pos));
+				System.out.println("adding \t:"+added.get(pos));
 			}
 
 			dim = pl.nSongs();
