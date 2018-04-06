@@ -14,9 +14,9 @@ public class Loop
 	{
 		if(loop_state == 1)
 		{
-				this.mp = player;
-				this.loop_start_single(mp);
-		}
+//				this.mp = player;
+				this.loop_start_single(player);
+		}//prima era fatto con mp ma non funzionava lo stesso
 		else
 		{
 			if(loop_state == 0)
@@ -26,9 +26,10 @@ public class Loop
 
 
 
-	void loop_start_single(MediaPlayer mp)
+	void loop_start_single(MediaPlayer player)
 	{
-		mp.setCycleCount(AudioClip.INDEFINITE);			
+		System.out.println("nel loop di singola canzone");
+		player.setCycleCount(AudioClip.INDEFINITE);
 	}
 
 
