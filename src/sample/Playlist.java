@@ -10,10 +10,10 @@ public class Playlist
 	List<MediaPlayer> pl = new ArrayList<MediaPlayer>();
 	List<String> names = new ArrayList<String>();
 
-	void addSong(String name)
+	void addSong(String name, int pos)
 	{	
-		names.add(name);
-		pl.add(new MediaPlayer(new Media(new File(name).toURI().toString())));
+		names.add(pos, name);
+		pl.add(pos, new MediaPlayer(new Media(new File(name).toURI().toString())));
 	}
 
 	
