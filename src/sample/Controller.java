@@ -47,7 +47,7 @@ public class Controller {
 	public Button addSong = new Button(); 
 	public Button removeSong = new Button();
 	int position = 0, oldPosition = -1;
-	boolean playlistOn = false;
+	boolean playlistOn = true;
 	Random rand = new Random();
 
 	//Inizializziamo la sorgente audio
@@ -267,13 +267,19 @@ public class Controller {
 				grafica.setPauseIcon(playButton);
 			}
 			else
-			{				
+			{
 				if(playlistOn && !mooved)
 				{
                     path = pl.names.get(position);
                     player = pl.currentSong(position);
-                    System.out.println("nel caso di playlist " + path);
                 }
+                else
+                {
+                    path = pl.names.get(clicked);
+                    player = pl.currentSong(clicked);
+                    click = false;
+                }
+
 
                 mooved = false;
 
@@ -297,7 +303,7 @@ public class Controller {
 
 		if(!player.getStatus().equals(MediaPlayer.Status.PLAYING) && !player.getStatus().equals(MediaPlayer.Status.PAUSED))
 		{
-			if(pl.nSongs() == 0)
+			if(click)
 			{
 			    playlistOn = false;
 				System.out.println("No songs in playlist, opened file " + path);
@@ -418,38 +424,45 @@ public class Controller {
 					{
 						if(loopStatus == 2 && playlistOn && (position == pl.nSongs()-1))//se siamo in loop di una playlist e siamo arrivati all'ultima canzone
 						{
-							if(!shuffleOn)
-								position = 0;
+							if(shuffleOn)
+                                this.randomGenerator();
 							else
+							    position = 0;
+
+/*							else
 							{
 								this.randomGenerator();
 								System.out.println("Ultimo brano in playlist: generato il numero random " + position);
 							}
-
+*/
 							this.stop();
 							player = pl.currentSong(position);
 							this.playSong();
 						}				
 						else
 						{
+						    grafica.setPlayIcon(playButton);
 							System.out.println("Ultimo caso di stop");
 							this.stop();
 
 							if(!shuffleOn)
-								position = 0;
+							{
+                                position = 0;
+                                gotSongTime = false;
+                            }
 							else
 							{
-								if(!shuffleOn)
+/*								if(!shuffleOn)
 								{
 									this.stop();	
 								}
 								else
-								{	
+*///								{
 									this.randomGenerator();
 									System.out.println("Ultimo brano in pl: generato il numero random"+position);
 									player = pl.currentSong(position);
 									this.playSong();
-								}
+//								}
 							}
 
 							if(loopStatus == 0)
@@ -477,6 +490,9 @@ public class Controller {
 
 		if((elapsedM*60)+elapsedS == totalS+totalM*60)
             grafica.setPlayIcon(playButton);
+
+		if(!playlistOn)
+		    playlistOn = true;
 
 		if(loopStatus == 0)// && !shuffleOn) //implicito nel loopstatus
 		{
