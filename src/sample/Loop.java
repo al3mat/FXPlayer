@@ -10,27 +10,18 @@ public class Loop
 	MediaPlayer mp;
 
 
-	boolean loopCall(boolean loop_state, MediaPlayer player)
+	void loopCall(int loop_state, MediaPlayer player)
 	{
-		if(loop_state)
+		if(loop_state == 1)
 		{
-			if(songs == 1)
-			{
 				this.mp = player;
 				this.loop_start_single(mp);
-				return false;
-			}
-			else
-			{
-				return true;
-			}
 		}
 		else
 		{
-			this.stop_loop(player);
-			return false;
+			if(loop_state == 0)
+			    this.stop_loop(player);
 		}
-
 	}
 
 
@@ -52,15 +43,6 @@ public class Loop
 		if(!mp.getCurrentTime().equals(mp.getTotalDuration()))
 		{
 			mp.setCycleCount(0);
-
-			try 
-			{
-				this.wait();
-			} 
-			catch (InterruptedException e) 
-			{
-				e.printStackTrace();
-			}//sostituire con il wait(long) nel quale mettere il tempo rimanente
 		}//caso in cui si disattivi il loop mentre и ancora in riproduzione
 	}//impostare che, una volta finita la riproduzione, venga riprodotto il brano successivo nella playlist
 }
