@@ -1,15 +1,19 @@
 package sample;
 
-import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.Media;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -23,6 +27,7 @@ public class Controller {
 	public Button forwardButton = new Button();
 	public Button backwardButton = new Button();
 	public Button repeatButton = new Button();
+	public Button styleButton = new Button();
 	public Label artistLabel = new Label();
 	public Label titleLabel = new Label();
 	public Label albumLabel = new Label();
@@ -39,15 +44,15 @@ public class Controller {
 	public ToggleButton shuffleButton = new ToggleButton();
 	public AnchorPane paneControls = new AnchorPane();
 
-	UI grafica = new UI();
+	private UI grafica = new UI();
 
 
 	//aggiungo bottoni per gestire la playlist
 	public Button addSong = new Button(); 
 	public Button removeSong = new Button();
-	int position = 0, oldPosition = -1;
-	boolean playlistOn = false;
-	Random rand = new Random();
+	private int position = 0, oldPosition = -1;
+	private boolean playlistOn = false;
+	private Random rand = new Random();
 
 	//Inizializziamo la sorgente audio
 	private String path = new String("src/sample/Hero.mp3");
@@ -55,25 +60,31 @@ public class Controller {
 	private MediaPlayer player = new MediaPlayer(source);
 
 	//Inizializziamo i parametri per i Tag
-	boolean gotSongTime = true, shuffleOn = false;												//cambiare quando si avanza di una canzone nella playlist 
-	int totalS = 0, totalM = 0, elapsedS = 0, elapsedM = 0;
-	Loop loop = new Loop();
-	boolean loop_state = false, end = false;
-	Playlist pl = new Playlist();
-	int totalS_on_moving;
+	private boolean gotSongTime = true, shuffleOn = false;												//cambiare quando si avanza di una canzone nella playlist
+	private int totalS = 0, totalM = 0, elapsedS = 0, elapsedM = 0;
+	private Loop loop = new Loop();
+	private boolean loop_state = false, end = false;
+	private Playlist pl = new Playlist();
+	private int totalS_on_moving;
 	List<String> added = new ArrayList<String>();
-	int pos;
+	private int pos;
+
+	List<String> styleList = new ArrayList<>();
 
 
-	FileSelection fs = new FileSelection();
+	private FileSelection fs = new FileSelection();
 	//																sistemare il loop in base alla variabile che indica se � in riproduzione una playlist
 
 	public void initialize(){
 		grafica.setUI(playButton, stopButton, forwardButton, backwardButton, repeatButton, shuffleButton, trackImage, paneControls, artistLabel, titleLabel, albumLabel, genreLabel, yearLabel);
 	}
 
+	private void reloadUI(UI gui){
+		gui.setUI(playButton, stopButton, forwardButton, backwardButton, repeatButton, shuffleButton, trackImage, paneControls, artistLabel, titleLabel, albumLabel, genreLabel, yearLabel);
+	}
 
-	public void addSongToPlaylist(ActionEvent e)
+
+	public void addSongToPlaylist()
 	{
 		fs.start(new Stage());
 		added = fs.filename;
@@ -90,7 +101,7 @@ public class Controller {
 
 
 
-	public void removeSongFromPlaylist(ActionEvent e)
+	public void removeSongFromPlaylist()
 	{
 		if(pl.nSongs() > 0)
 			pl.removeSong(0, 0);//cambiare 0,0 con start, end
@@ -99,7 +110,7 @@ public class Controller {
 	}//serve il numero della canzone->da integrare nella parte grafica, quando si seleziona
 
 
-	public void setBackwardButton(ActionEvent e)
+	public void setBackwardButton()
 	{
 		if(player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED))
 		{
@@ -131,7 +142,7 @@ public class Controller {
 		System.out.println("Backwarding in the playlist");
 	}
 
-	public void setForwardButton(ActionEvent e)
+	public void setForwardButton()
 	{
 		if(player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED))
 			this.stop();
@@ -160,7 +171,7 @@ public class Controller {
 		System.out.println("Forwarding in the playlist");
 	}
 
-	public void setShuffleButton(ActionEvent e)
+	public void setShuffleButton()
 	{
 		shuffleOn = shuffleButton.isSelected();
 
@@ -173,7 +184,7 @@ public class Controller {
 	}
 
 
-	public void setRepeatButton(ActionEvent e)
+	public void setRepeatButton()
 	{
 		if(!shuffleOn)
 		{	loop_state = !loop_state;
@@ -183,7 +194,7 @@ public class Controller {
 
 
 
-	public void playSong()
+	void playSong()
 	{
 		if (player.getStatus().equals(MediaPlayer.Status.PLAYING))
 		{
@@ -218,7 +229,7 @@ public class Controller {
 	}
 
 
-	public void setPlayButton(ActionEvent event) 
+	public void setPlayButton()
 	{
 		if(!player.getStatus().equals(MediaPlayer.Status.PLAYING) && !player.getStatus().equals(MediaPlayer.Status.PAUSED))
 		{
@@ -239,7 +250,7 @@ public class Controller {
 	}
 
 
-	public void setStopButton(ActionEvent event) {
+	public void setStopButton() {
 
 		if (player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED))
 		{
@@ -253,7 +264,7 @@ public class Controller {
 		}
 	}
 
-	public void getTrackInfo() 
+	public void getTrackInfo()
 	{
 
 		//Calcoliamo la durata della canzone (timeM : timeS)
@@ -285,7 +296,7 @@ public class Controller {
 		yearLabel.setText("Anno: " + source.getMetadata().get("year"));
 	}
 
-	public void setVolume()
+	private void setVolume()
 	{
 		volumeSlider.valueProperty().addListener(observable -> {
 			if (volumeSlider.isValueChanging()){
@@ -302,8 +313,94 @@ public class Controller {
 		});
 	}
 
+	public void setStyleButton() throws IOException{
 
-	public void setTrackTime()
+		File check;
+		Random rand = new Random();
+		int n = rand.nextInt(65536) + 1;
+
+		//Lista dei file da controllare
+		if (styleList.isEmpty()) {
+			styleList.add(0, System.getProperty("java.io.tmpdir") + n + "FXStyle/background.jpg");
+			styleList.add(1, System.getProperty("java.io.tmpdir") + n + "FXStyle/defaultcover.jpg");
+			styleList.add(2, System.getProperty("java.io.tmpdir") + n + "FXStyle/next.png");
+			styleList.add(3, System.getProperty("java.io.tmpdir") + n + "FXStyle/pause.png");
+			styleList.add(4, System.getProperty("java.io.tmpdir") + n + "FXStyle/play.png");
+			styleList.add(5, System.getProperty("java.io.tmpdir") + n + "FXStyle/previous.png");
+			styleList.add(6, System.getProperty("java.io.tmpdir") + n + "FXStyle/repeat_1.png");
+			styleList.add(7,System.getProperty("java.io.tmpdir") + n + "FXStyle/repeat_all.png");
+			styleList.add(8, System.getProperty("java.io.tmpdir") + n + "FXStyle/repeat_off.png");
+			styleList.add(9, System.getProperty("java.io.tmpdir") + n + "FXStyle/shuffle_off.png");
+			styleList.add(10, System.getProperty("java.io.tmpdir") + n + "FXStyle/shuffle_on.png");
+			styleList.add(11, System.getProperty("java.io.tmpdir") + n + "FXStyle/stop.png");
+		} else {
+			styleList.set(0, System.getProperty("java.io.tmpdir") + n + "FXStyle/background.jpg");
+			styleList.set(1, System.getProperty("java.io.tmpdir") + n + "FXStyle/defaultcover.jpg");
+			styleList.set(2, System.getProperty("java.io.tmpdir") + n + "FXStyle/next.png");
+			styleList.set(3, System.getProperty("java.io.tmpdir") + n + "FXStyle/pause.png");
+			styleList.set(4, System.getProperty("java.io.tmpdir") + n + "FXStyle/play.png");
+			styleList.set(5, System.getProperty("java.io.tmpdir") + n + "FXStyle/previous.png");
+			styleList.set(6, System.getProperty("java.io.tmpdir") + n + "FXStyle/repeat_1.png");
+			styleList.set(7, System.getProperty("java.io.tmpdir") + n + "FXStyle/repeat_all.png");
+			styleList.set(8, System.getProperty("java.io.tmpdir") + n + "FXStyle/repeat_off.png");
+			styleList.set(9, System.getProperty("java.io.tmpdir") + n + "FXStyle/shuffle_off.png");
+			styleList.set(10, System.getProperty("java.io.tmpdir") + n + "FXStyle/shuffle_on.png");
+			styleList.set(11, System.getProperty("java.io.tmpdir") + n + "FXStyle/stop.png");
+		}
+
+
+		//Scelgo il file ZIP
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Scegliere il file zip");
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("ZIP Files", "*.zip"));
+		File selectedFile = fileChooser.showOpenDialog(new Stage());
+
+		if (selectedFile==null){
+			return;
+		}
+
+
+
+		//Estraggo il file zip in un direttorio temporaneo
+		String zipFilePath = selectedFile.toString();
+		String destDirectory = System.getProperty("java.io.tmpdir") + n + "FXStyle";
+		UnzipUtility unzipper = new UnzipUtility();
+		try {
+			unzipper.unzip(zipFilePath, destDirectory);
+		} catch (Exception ex) {
+			//gestione degli errori
+			ex.printStackTrace();
+		}
+
+		//Controlliamo l'integrità dei file
+		for(int i=0; i<styleList.size(); i++){
+			check = new File(styleList.get(i));
+			if (!check.isFile() || !check.exists()){
+				System.out.println("Skin non è completa!");
+				return;
+			}
+		}
+
+		//Copiamo i file della Skin nella cartella del proggetto
+		for (int i=0;i<styleList.size();i++){
+			check = new File(styleList.get(i));
+			Path file1 = Paths.get(styleList.get(i));
+			Path file2 = Paths.get(System.getProperty("user.dir") + "/src/sample/img/" + check.getName());
+			Files.copy(file1, file2, StandardCopyOption.REPLACE_EXISTING);
+
+		}
+
+		//Ricarichiamo la skin
+		UI gui = new UI();
+		gui.setUI(playButton, stopButton, forwardButton, backwardButton, repeatButton, shuffleButton, trackImage, paneControls, artistLabel, titleLabel, albumLabel, genreLabel, yearLabel);
+
+		System.out.println("Skin cambiata!");
+
+
+	}
+
+
+	private void setTrackTime()
 	{
 		timeSlider.setOnMouseReleased((MouseEvent) -> 
 		{
@@ -398,7 +495,7 @@ public class Controller {
 		});
 	}
 
-	void stop()
+	private void stop()
 	{
 		elapsedS = 0;
 		elapsedM = 0;
@@ -419,7 +516,7 @@ public class Controller {
 			if((loop_state && this.playlistOn)||shuffleOn)
 			{
 				player.stop();
-				loop_state = !loop_state;									//la funzione di loop si interrompe quando � premuto il tasto stop
+				loop_state = !loop_state;									//la funzione di loop si interrompe quando è premuto il tasto stop
 
 
 				if(!gotSongTime)
@@ -429,7 +526,7 @@ public class Controller {
 	}
 
 
-	void printTime()
+	private void printTime()
 	{
 		if (elapsedS > 9)
 		{
@@ -441,7 +538,7 @@ public class Controller {
 		}
 	}
 
-	void randomGenerator()
+	private void randomGenerator()
 	{
 		this.oldPosition = position;
 

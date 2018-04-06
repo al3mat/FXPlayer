@@ -6,6 +6,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
 
 public class UI {
 
@@ -72,6 +73,7 @@ public class UI {
     }
 
     public void setUI(Button playButton, Button stopButton, Button forwardButton, Button backwardButton, Button repeatButton, ToggleButton shuffleButton, ImageView trackImage, AnchorPane paneControls, Label artistLabel, Label titleLabel, Label albumLabel, Label genreLabel, Label yearLabel){
+
         playButton.setGraphic(playView);
         stopButton.setGraphic(stopView);
         backwardButton.setGraphic(backwardView);
@@ -82,7 +84,11 @@ public class UI {
         paneControls.setBackground(background);
 
         //Setting font
-
+        artistLabel.setFont(new Font(fontType, fontSize));
+        titleLabel.setFont(new Font(fontType, fontSize));
+        albumLabel.setFont(new Font(fontType, fontSize));
+        genreLabel.setFont(new Font(fontType, fontSize));
+        yearLabel.setFont(new Font(fontType, fontSize));
     }
 
 

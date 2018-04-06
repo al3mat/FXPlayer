@@ -7,8 +7,8 @@ import javafx.scene.media.MediaPlayer;
 
 public class Playlist 
 {
-	List<MediaPlayer> pl = new ArrayList<MediaPlayer>();
-	List<String> names = new ArrayList<String>();
+	List<MediaPlayer> pl = new ArrayList<>();
+	List<String> names = new ArrayList<>();
 
 	void addSong(String name)
 	{	
