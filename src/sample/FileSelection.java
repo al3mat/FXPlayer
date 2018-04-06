@@ -12,16 +12,9 @@ import javafx.stage.Stage;
 
 public class FileSelection
 {
-    List<File> selected = new ArrayList<File>();
+    List<File> selected;
     FileChooser fc;
-
-    /* Da controllare se servono
-    Button addPl = new Button("add_to_playlist");
-    Button reproduct = new Button("reproduct");
-    Button cancel = new Button("cancel");
-    */
-
-    List<String> filename = new ArrayList<>();
+    List<String> filename = new ArrayList<String>();
     Alert error;
     boolean set = false, addPlaylist = false;
     ExtensionFilter ef = new ExtensionFilter("AudioFiles", "*.mp3", "*.wav");
@@ -39,17 +32,22 @@ public class FileSelection
         //		while(selected.equals(null) || !this.fileController())
         selected = fc.showOpenMultipleDialog(stage);
 
-        for(pos = 0; pos < selected.size(); pos++)
+        if(selected != null)
         {
-            if(fileController())
-                filename.set(pos, selected.get(pos).toString());
-        }//modificato
+            for (pos = 0; pos < selected.size(); pos++)
+            {
+                filename.add(pos, selected.get(pos).toString());
+                System.out.println("selezionato il brano\t"+filename.get(pos));
+
+                fileController(pos);
+            }
+        }
     }
 
 
-    boolean fileController()
+    boolean fileController(int i)
     {
-        if(!filename.contains(".mp3") && !filename.contains(".wav") && filename.equals(null))//controllare con getfilechooser
+        if(!filename.get(i).contains(".mp3") && !filename.get(i).contains(".wav"))
         {
             filename = null;
             error = new Alert(AlertType.ERROR);

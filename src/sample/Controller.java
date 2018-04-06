@@ -10,7 +10,6 @@ import javafx.scene.media.Media;
 import javafx.stage.Stage;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -51,7 +50,7 @@ public class Controller {
 
 	//Inizializziamo la sorgente audio
 	private String path = new String("src/sample/Hero.mp3");
-	private Media source = new Media(new File(path).toURI().toString());
+	private Media source = new Media(new File(path).toURI().toString());;
 	private MediaPlayer player = new MediaPlayer(source);
 
 	//Inizializziamo i parametri per i Tag
@@ -61,7 +60,7 @@ public class Controller {
 	boolean loop_state = false, end = false;
 	Playlist pl = new Playlist();
 	int totalS_on_moving;
-	List<String> added = new ArrayList<String>();
+	List<String> added;
 	int pos;
 
 
@@ -82,10 +81,11 @@ public class Controller {
 		{
 			//			path = added.get(position);
 			for(pos = 0; pos < added.size(); pos++)
-				pl.addSong(added.get(position));
+			{
+				pl.addSong(added.get(pos));
+				System.out.println("ricevuto il percorso:" +added.get(pos));
+			}
 		}//controllare filepah per riproduzione del file corrente
-
-		System.out.println("ricevuto il percorso:" +added);
 	}
 
 
@@ -199,12 +199,12 @@ public class Controller {
 			}
 			else
 			{				
-				if(playlistOn)
-				{
-					path = pl.names.get(position);
-					player = pl.currentSong(position);
-				}
-
+				if(playlistOn) {
+                    path = pl.names.get(position);
+                    player = pl.currentSong(position);
+                    System.out.println("nel caso di playlist " + path);
+                }
+				source = new Media(new File(path).toURI().toString());                          //sistemare l'assegnamento
 				getTrackInfo();
 
 				player.play();
@@ -220,6 +220,8 @@ public class Controller {
 
 	public void setPlayButton(ActionEvent event) 
 	{
+	    System.out.println(pl.nSongs());
+
 		if(!player.getStatus().equals(MediaPlayer.Status.PLAYING) && !player.getStatus().equals(MediaPlayer.Status.PAUSED))
 		{
 			if(pl.nSongs() == 0)
@@ -261,7 +263,6 @@ public class Controller {
 		if (gotSongTime)
 		{
 			totalS = (int)player.getTotalDuration().toSeconds();
-
 			totalM = totalS / 60;
 			totalS -= totalM * 60;
 			gotSongTime=false;
@@ -386,7 +387,6 @@ public class Controller {
 								playlistOn = false;							
 							}							
 						}
-
 					}
 				}
 				else
