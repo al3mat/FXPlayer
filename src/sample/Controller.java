@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.event.ActionEvent;
+import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -34,7 +35,7 @@ public class Controller {
 	public ImageView trackImage = new ImageView();
 	public Slider timeSlider = new Slider();
 	public Slider volumeSlider = new Slider();
-	public ListView playList = new ListView();
+	public ListView playList;
 	public ToggleButton shuffleButton = new ToggleButton();
 	public AnchorPane paneControls = new AnchorPane();
     int loopStatus = 0;
@@ -63,7 +64,9 @@ public class Controller {
 	int totalS_on_moving;
 	List<String> added;
 	int pos = 0, dim;
-	boolean mooved = false;
+	boolean mooved = false, click = false;
+	listTitle lt = new listTitle();
+	int clicked;
 
 
 	FileSelection fs = new FileSelection();
@@ -92,9 +95,12 @@ public class Controller {
 
 			dim = pl.nSongs();
 
-			System.out.println("\n\n");
-			for(int i = 0; i<pl.nSongs(); i++)
-			    System.out.println(pl.names.get(i));
+			lt.takeTitles(pl.names);
+            playList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+            playList.setOrientation(Orientation.VERTICAL);
+			playList.setItems(lt.st);
+
+			System.out.println(playList.getItems());
 		}//controllare filepah per riproduzione del file corrente
 	}
 
@@ -103,7 +109,12 @@ public class Controller {
 	public void removeSongFromPlaylist(ActionEvent e)
 	{
 		if(pl.nSongs() > 0)
-			pl.removeSong(0, 0);//cambiare 0,0 con start, end
+		{
+            pl.removeSong(clicked, clicked);//cambiare 0,0 con start, end
+            playList.getItems().remove(clicked);
+            //           playList.refresh();
+            click = false;
+        }
 		else
 			System.out.println("impossibile rimuovere canzoni: non ne sono presenti in playlist");
 	}//serve il numero della canzone->da integrare nella parte grafica, quando si seleziona
@@ -158,12 +169,7 @@ public class Controller {
         {
             if (player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED))
                 this.stop();
- /*           else
-            {
-                elapsedS = 0;
-                elapsedM = 0;
-            }
-*/
+
             if (shuffleOn)
             {
                 this.randomGenerator();
@@ -182,21 +188,19 @@ public class Controller {
                 }
                 else
                     {
-                    if (position == pl.nSongs())
-                    {
+                    if (position == pl.nSongs()) {
                         System.out.println("caso di ultima canzone");
                         position--;
                         player = pl.currentSong(position);
                     }
                 }
-
-                this.playSong();
             }
 
+            this.playSong();
             mooved = true;
             System.out.println("Forwarding in the playlist");
         }
-    }
+        }
 
 	public void setShuffleButton(ActionEvent e)
 	{
@@ -517,4 +521,13 @@ public class Controller {
 			position = rand.nextInt(pl.nSongs());
 		}while(position > pl.nSongs()-1 || position == oldPosition);
 	}
+
+	public void isClicked()
+    {
+       if(playList.getFocusModel().getFocusedIndex() == playList.getSelectionModel().getSelectedIndex())
+           clicked = playList.getSelectionModel().getSelectedIndex();
+
+       click = true;
+       System.out.println("clicked value:  "+clicked);
+    }
 }
