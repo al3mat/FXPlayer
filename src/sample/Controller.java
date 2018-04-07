@@ -225,6 +225,7 @@ public class Controller {
 		    {
 		        loopStatus = 0;
 			    grafica.setShuffleOffIcon(shuffleButton);
+			    grafica.setRepeatOffIcon(repeatButton);
 			    shuffleOn = false;
 		    }
 		System.out.println("Shuffle " + shuffleOn);
@@ -233,7 +234,7 @@ public class Controller {
 
 	public void setRepeatButton(ActionEvent e)
 	{
-		if(!shuffleOn)
+//		if(!shuffleOn)
 		{
 		    if(loopStatus == 0)
 		    {
@@ -288,6 +289,7 @@ public class Controller {
 			{
 				if(playlistOn && !mooved)
 				{
+				    System.out.println("caso play con shuffle posizione "+position+" filename "+pl.names.get(position));
                     path = pl.names.get(position);
                     player = pl.currentSong(position);
                 }
@@ -298,20 +300,34 @@ public class Controller {
                     click = false;
                 }
 
-
+/*
                 mooved = false;
 
 				System.out.println(path);
 				source = new Media(new File(path).toURI().toString());//new Media(new File(path).toURI().toString());                          //sistemare l'assegnamento
 				getTrackInfo();
 
-				player.play();
+/*				player.play();
 				grafica.setPauseIcon(playButton);
 				timeSlider.setMax(player.getTotalDuration().toSeconds());
 				setVolume();
 				setTrackTime();
 				end = false;
-			}
+*/			}
+
+
+
+            gotSongTime = true;
+            mooved = false;
+            System.out.println(path);
+            source = new Media(new File(path).toURI().toString());//new Media(new File(path).toURI().toString());                          //sistemare l'assegnamento
+            getTrackInfo();
+            grafica.setPauseIcon(playButton);
+            timeSlider.setMax(player.getTotalDuration().toSeconds());
+            setVolume();
+            setTrackTime();
+            end = false;
+            player.play();
 		}
 		ended = false;
 		stopped = false;
@@ -371,6 +387,8 @@ public class Controller {
 			totalM = totalS / 60;
 			totalS -= totalM * 60;
 			gotSongTime=false;
+
+			System.out.println("la canzone "+position+" ha durata "+totalM+":"+totalS);
 
 			if (totalS > 9) 
 			{
