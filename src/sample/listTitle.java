@@ -17,9 +17,6 @@ public class listTitle
     {
         st = FXCollections.observableArrayList(names);
 
-        for(int i = 0; i < st.size(); i++)
-            System.out.println("in listView\t"+st.get(i));
-
         lv.setItems(st);
     }
 
