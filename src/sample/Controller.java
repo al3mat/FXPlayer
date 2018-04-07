@@ -52,7 +52,7 @@ public class Controller {
 
 
 	//aggiungo bottoni per gestire la playlist
-	public Button addSong = new Button(); 
+	public Button addSong = new Button();
 	public Button removeSong = new Button();
 	int position = 0, oldPosition = -1;
 	boolean playlistOn = true;
@@ -140,8 +140,6 @@ public class Controller {
                 else
                     wasPlaying = true;
 
-                mooved = true;
-
                 this.stop();
             }
 
@@ -152,23 +150,15 @@ public class Controller {
             else
                 {
                 //			player = pl.previousSong(position);
-                if (position > 0) {
-                    if (loopStatus != 1)
-                    {
+                if (position > 0 && loopStatus != 1)
+                {
                         position--;
-                        player = pl.currentSong(position);
-                    }
-                    else
-                        player = pl.currentSong(position);
-                }
-                else
-                    {
-                    if (position == 0)
-                        player = pl.currentSong(position);
                 }
 
-            }
+                //player = pl.currentSong(position);
 
+            }//nel caso in cui posizione == 0->non cambia
+/*
             if(wasPlaying)
                 this.playSong();
             else
@@ -179,10 +169,13 @@ public class Controller {
             }
 
             wasPlaying = false;
-            mooved = false;
+            mooved = true;*/
+
+        this.assign();
         }
-		System.out.println("Backwarding in the playlist at position "+position);
+	System.out.println("Backwarding in the playlist at position "+position);
 	}
+
 
 	public void setForwardButton(ActionEvent e)
     {
@@ -214,12 +207,10 @@ public class Controller {
                             position = 0;
                         else
                             position++;
-                        player = pl.currentSong(position);
 
                         System.out.println("nel caso no loop position vale  "+position);
                     }
-                    else
-                        player = pl.currentSong(position);
+
                     //			player = pl.nextSong(position);
                 }
                 else
@@ -228,10 +219,11 @@ public class Controller {
                     {
                         System.out.println("caso di ultima canzone in nessun loop");
                         position = 0;
-                        player = pl.currentSong(position);
                     }
                 }
             }
+/*
+            player = pl.currentSong(position);
 
             if(wasPlaying)
                 this.playSong();
@@ -243,11 +235,10 @@ public class Controller {
             }
 
 
-            System.out.println("wasplaying "+wasPlaying);
-
             mooved = true;
-            wasPlaying = false;
-            System.out.println("Forwarding in the playlist position "+position);
+            wasPlaying = false;*/
+
+        this.assign();
         }
     }
 
@@ -697,5 +688,23 @@ public class Controller {
            clicked = playList.getSelectionModel().getSelectedIndex();
 
        click = true;
+    }
+
+    void assign()
+    {
+        player = pl.currentSong(position);
+
+        if(wasPlaying)
+            this.playSong();
+        else
+        {
+            elapsedM = 0;
+            elapsedS = 0;
+            this.printTime();
+        }
+
+
+        mooved = true;
+        wasPlaying = false;
     }
 }
