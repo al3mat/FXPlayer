@@ -76,6 +76,7 @@ public class Controller {
 	listTitle lt = new listTitle();
 	int clicked;
 	boolean wasPlaying = false;
+	boolean stopped = false;
 
 	List<String> styleList = new ArrayList<>();
 	FileSelection fs = new FileSelection();
@@ -374,25 +375,20 @@ public class Controller {
 	}
 
 
-	public void setStopButton(ActionEvent event) {
+	public void setStopButton(ActionEvent event)
+    {
 
 		if (player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED))
 		{
             loopStatus = 0;									//la funzione di loop si interrompe quando è premuto il tasto stop
             shuffleOn = false;
-			player.stop();
-//			player.setStartTime(javafx.util.Duration.seconds(0));
-//			timeSlider.setValue(0);
-//			gotSongTime = true;
-//			elapsedS = 0;
-//			elapsedM = 0;
-//			grafica.setPlayIcon(playButton);
+            stopped = true;
+			this.stop();
 		}
 	}
 
 	public void getTrackInfo() 
 	{
-
 		//Calcoliamo la durata della canzone (timeM : timeS)
 		//DA RIFARE CON LA PLAYLIST
 		if (gotSongTime)
@@ -621,12 +617,14 @@ public class Controller {
 
 	private void stop()
 	{
-		if(ended)
+		if(ended || stopped)
         {
             System.out.println("canzone finita");
 
             if(loopStatus != 1)
                 grafica.setPlayIcon(playButton);
+
+            stopped = false;
         }
 
         player.stop();
