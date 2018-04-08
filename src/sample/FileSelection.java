@@ -52,7 +52,8 @@ public class FileSelection
             filename = null;
             error = new Alert(AlertType.ERROR);
             error.setHeaderText("invalid selection");
-            error.setContentText("selezionata tipologia di file invalida, selezionare un file con estensione mp3 o wav");
+            error.setContentText("selezionata tipologia di file invalida, selezionare un file con estensione .mp3 o .wav");
+            error.showAndWait();
             System.out.println("errore: inserito file non audio");
             return false;
         }

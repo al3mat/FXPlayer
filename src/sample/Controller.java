@@ -119,7 +119,7 @@ public class Controller {
 	{
 		if(pl.nSongs() > 0)
 		{
-            pl.removeSong(clicked, clicked);//cambiare 0,0 con start, end
+            pl.removeSong(clicked, clicked, position);
             playList.getItems().remove(clicked);
             click = false;
         }
@@ -244,8 +244,6 @@ public class Controller {
                 }
                 else
                     {
-                        System.out.println("playliston vale "+playlistOn+"\tloopstatus vale "+loopStatus);
-
                         if(loopStatus == 1 && !playlistOn)
                         {
                             loopStatus = 0;
@@ -289,10 +287,10 @@ public class Controller {
 			else {
 				if (playlistOn && !mooved)
 				{
-					System.out.println("caso play con shuffle posizione " + position + " filename " + pl.names.get(position));
 					path = pl.names.get(position);
 					player = pl.currentSong(position);
-				} else {
+				} else
+				    {
 					path = pl.names.get(clicked);
 					player = pl.currentSong(clicked);
 					click = false;
@@ -300,7 +298,7 @@ public class Controller {
                 gotSongTime = true;
                 mooved = false;
                 System.out.println(path);
-                source = new Media(new File(path).toURI().toString());//new Media(new File(path).toURI().toString());                          //sistemare l'assegnamento
+                source = new Media(new File(new String(path)).toURI().toString());//new Media(new File(path).toURI().toString());                          //sistemare l'assegnamento
                 getTrackInfo();
                 grafica.setPauseIcon(playButton);
                 timeSlider.setMax(player.getTotalDuration().toSeconds());
@@ -595,10 +593,8 @@ public class Controller {
 	{
 		if(ended || stopped)
         {
-            System.out.println("shuffleon "+shuffleOn+"\tstopped "+ stopped +"\tmooved " +mooved+"\tstoppressed "+stopped);
             if(shuffleOn && stopPressed)
             {
-            	System.out.println("\n\nshuffle disattivato nello stop");
 				grafica.setShuffleOffIcon(shuffleButton);
 				shuffleOn = false;
 				stopPressed = false;
@@ -665,8 +661,6 @@ public class Controller {
     void assign()
     {
         player = pl.currentSong(position);
-
-        System.out.println("in assign position vale "+position+" stopped "+stopped+" wasplaying "+wasPlaying);
 
         if(wasPlaying)
             this.playSong();

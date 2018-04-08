@@ -90,6 +90,4 @@ public class UI {
         genreLabel.setFont(new Font(fontType, fontSize));
         yearLabel.setFont(new Font(fontType, fontSize));
     }
-
-
 }
