@@ -210,9 +210,7 @@ public class Controller {
 
 	public void setShuffleButton(ActionEvent e)
 	{
-	    System.out.println("shuffle vale "+shuffleOn);
-
-		if (shuffleButton.isSelected() && loopStatus != 1)
+		if (shuffleButton.isSelected() && loopStatus != 1 && playlistOn)
 		{
 			grafica.setShuffleOnIcon(shuffleButton);
 			loopStatus = 2;
@@ -246,6 +244,14 @@ public class Controller {
                 }
                 else
                     {
+                        System.out.println("playliston vale "+playlistOn+"\tloopstatus vale "+loopStatus);
+
+                        if(loopStatus == 1 && !playlistOn)
+                        {
+                            loopStatus = 0;
+                            grafica.setRepeatOffIcon(repeatButton);
+                        }
+
                         if(loopStatus == 2)
                         {
                             grafica.setRepeatOffIcon(repeatButton);
@@ -269,7 +275,7 @@ public class Controller {
 	{
 		if (player.getStatus().equals(MediaPlayer.Status.PLAYING) && (!ended && !stopped))
 		{
-		    System.out.println("primo caso play\t"+elapsedM+"  "+elapsedS+"\t"+player.getStatus());
+		    System.out.println("pausa\t"+elapsedM+"  "+elapsedS+"\t"+player.getStatus());
 			player.pause();
 			grafica.setPlayIcon(playButton);
 		}
@@ -277,13 +283,12 @@ public class Controller {
 		{
 			if(player.getStatus().equals(MediaPlayer.Status.PAUSED) || loopStatus == 1)
 			{
-			    System.out.println("caso play di loop di singola canzone");
-
 				player.play();
 				grafica.setPauseIcon(playButton);
 			}
 			else {
-				if (playlistOn && !mooved) {
+				if (playlistOn && !mooved)
+				{
 					System.out.println("caso play con shuffle posizione " + position + " filename " + pl.names.get(position));
 					path = pl.names.get(position);
 					player = pl.currentSong(position);
@@ -292,19 +297,18 @@ public class Controller {
 					player = pl.currentSong(clicked);
 					click = false;
 				}
-			}
-
-            gotSongTime = true;
-            mooved = false;
-            System.out.println(path);
-            source = new Media(new File(path).toURI().toString());//new Media(new File(path).toURI().toString());                          //sistemare l'assegnamento
-            getTrackInfo();
-            grafica.setPauseIcon(playButton);
-            timeSlider.setMax(player.getTotalDuration().toSeconds());
-            setVolume();
-            setTrackTime();
-            end = false;
-            player.play();
+                gotSongTime = true;
+                mooved = false;
+                System.out.println(path);
+                source = new Media(new File(path).toURI().toString());//new Media(new File(path).toURI().toString());                          //sistemare l'assegnamento
+                getTrackInfo();
+                grafica.setPauseIcon(playButton);
+                timeSlider.setMax(player.getTotalDuration().toSeconds());
+                setVolume();
+                setTrackTime();
+                end = false;
+                player.play();
+            }
 		}
 		ended = false;
 		stopped = false;
@@ -313,12 +317,17 @@ public class Controller {
 
 	public void setPlayButton(ActionEvent event) 
 	{
-	    System.out.println(pl.nSongs());
-
 		if(!player.getStatus().equals(MediaPlayer.Status.PLAYING) && !player.getStatus().equals(MediaPlayer.Status.PAUSED))
 		{
 			if(click)
 			{
+				if(shuffleOn)
+				{
+					shuffleOn = false;
+					grafica.setShuffleOffIcon(shuffleButton);
+				}
+				//aggiunta
+
 			    playlistOn = false;
 			}
 			else
@@ -344,15 +353,14 @@ public class Controller {
 
 		if (player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED))
 		{
-            shuffleOn = false;
             stopped = true;
+            stopPressed = true;
 			this.stop();
             loopStatus = 0;									//la funzione di loop si interrompe quando è premuto il tasto stop
             grafica.setRepeatOffIcon(repeatButton);
             grafica.setPlayIcon(playButton);
+            stopped = false;
 		}
-
-		stopPressed = true;
 	}
 
 	public void getTrackInfo() 
@@ -436,7 +444,8 @@ public class Controller {
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("ZIP Files", "*.zip"));
 		File selectedFile = fileChooser.showOpenDialog(new Stage());
 
-		if (selectedFile==null){
+		if (selectedFile==null)
+		{
 			return;
 		}
 
@@ -586,11 +595,12 @@ public class Controller {
 	{
 		if(ended || stopped)
         {
-            System.out.println("shuffleon "+shuffleOn+"\tstopped "+ stopped +"\tmooved " +mooved);
+            System.out.println("shuffleon "+shuffleOn+"\tstopped "+ stopped +"\tmooved " +mooved+"\tstoppressed "+stopped);
             if(shuffleOn && stopPressed)
             {
-            	System.out.println("shuffle disattivato nello stop");
+            	System.out.println("\n\nshuffle disattivato nello stop");
 				grafica.setShuffleOffIcon(shuffleButton);
+				shuffleOn = false;
 				stopPressed = false;
 			}
 
