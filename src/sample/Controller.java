@@ -1,10 +1,12 @@
 package sample;
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.Media;
@@ -12,7 +14,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,7 +41,6 @@ public class Controller {
 	public Label genreLabel = new Label();
 	public Label yearLabel = new Label();
 	public Label totalTimeLabel = new Label();
-	public Label sampleRateLabel = new Label();
 	public Label bitRateLabel = new Label();
 	public Label elapsedTimeLabel = new Label();
 	public ImageView trackImage = new ImageView();
@@ -86,6 +86,21 @@ public class Controller {
 	public void initialize()
 	{
 		grafica.setUI(playButton, stopButton, forwardButton, backwardButton, repeatButton, shuffleButton, trackImage, paneControls, artistLabel, titleLabel, albumLabel, genreLabel, yearLabel, addSong, removeSong, styleButton, removeAllSongsButton, panePlaylist);
+
+		playList.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent click) {
+
+				if (click.getClickCount() == 2) {
+
+					//da gestire...forse...
+
+				}
+			}
+			});
+
+
 	}
 
 	public void addSongToPlaylist(ActionEvent e)
