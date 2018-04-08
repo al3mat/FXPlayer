@@ -8,6 +8,14 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
 public class UI {
 
     //Images
@@ -49,8 +57,19 @@ public class UI {
     private ImageView deleteAllView = new ImageView(deleteAllImage);
     private ImageView styleView = new ImageView(style);
 
-    String fontType = "Consolas";
-    Integer fontSize = 11;
+    List<String> config;
+
+    {
+        try {
+            config = Files.readAllLines(new File(System.getProperty("user.dir") + "/src/sample/img/style.cfg").toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    String fontType = config.get(0);
+    Integer fontSize = Integer.valueOf(config.get(1));
+    String playlistColor = config.get(2);
 
     public void setPlayIcon(Button playButton){
         playButton.setGraphic(playView);
@@ -80,7 +99,7 @@ public class UI {
         shuffleButton.setGraphic(shuffleOnView);
     }
 
-    public void setUI(Button playButton, Button stopButton, Button forwardButton, Button backwardButton, Button repeatButton, ToggleButton shuffleButton, ImageView trackImage, AnchorPane paneControls, Label artistLabel, Label titleLabel, Label albumLabel, Label genreLabel, Label yearLabel, Button addSongButton, Button removeSongButton, Button styleButton, Button removeAllSongsButton){
+    public void setUI(Button playButton, Button stopButton, Button forwardButton, Button backwardButton, Button repeatButton, ToggleButton shuffleButton, ImageView trackImage, AnchorPane paneControls, Label artistLabel, Label titleLabel, Label albumLabel, Label genreLabel, Label yearLabel, Button addSongButton, Button removeSongButton, Button styleButton, Button removeAllSongsButton, AnchorPane panePlaylist){
 
         playButton.setGraphic(playView);
         stopButton.setGraphic(stopView);
@@ -90,6 +109,7 @@ public class UI {
         repeatButton.setGraphic(repeatOffView);
         trackImage.setImage(albumImage);
         paneControls.setBackground(background);
+        panePlaylist.setStyle("-fx-background-color: #" + playlistColor + ";");
         addSongButton.setGraphic(addImageView);
         removeSongButton.setGraphic(deleteImageView);
         styleButton.setGraphic(styleView);

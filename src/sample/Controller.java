@@ -12,6 +12,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,6 +48,8 @@ public class Controller {
 	public ListView playList;
 	public ToggleButton shuffleButton = new ToggleButton();
 	public AnchorPane paneControls = new AnchorPane();
+	public AnchorPane panePlaylist = new AnchorPane();
+
     int loopStatus = 0;
     boolean ended = false;
 
@@ -81,13 +84,8 @@ public class Controller {
 
 	public void initialize()
 	{
-		grafica.setUI(playButton, stopButton, forwardButton, backwardButton, repeatButton, shuffleButton, trackImage, paneControls, artistLabel, titleLabel, albumLabel, genreLabel, yearLabel, addSong, removeSong, styleButton, removeAllSongsButton);
+		grafica.setUI(playButton, stopButton, forwardButton, backwardButton, repeatButton, shuffleButton, trackImage, paneControls, artistLabel, titleLabel, albumLabel, genreLabel, yearLabel, addSong, removeSong, styleButton, removeAllSongsButton, panePlaylist);
 	}
-
-/*	private void reloadUI(UI gui)
-    {
-		gui.setUI(playButton, stopButton, forwardButton, backwardButton, repeatButton, shuffleButton, trackImage, paneControls, artistLabel, titleLabel, albumLabel, genreLabel, yearLabel, addSong, removeSong, styleButton, removeAllSongsButton);
-	}*/
 
 	public void addSongToPlaylist(ActionEvent e)
 	{
@@ -455,6 +453,7 @@ public class Controller {
 			styleList.add(13, System.getProperty("java.io.tmpdir") + n + "FXStyle/delete.png");
 			styleList.add(14, System.getProperty("java.io.tmpdir") + n + "FXStyle/delete_all.png");
 			styleList.add(15, System.getProperty("java.io.tmpdir") + n + "FXStyle/style.png");
+			styleList.add(15, System.getProperty("java.io.tmpdir") + n + "FXStyle/style.cfg");
 		} else {
 			styleList.set(0, System.getProperty("java.io.tmpdir") + n + "FXStyle/background.jpg");
 			styleList.set(1, System.getProperty("java.io.tmpdir") + n + "FXStyle/defaultcover.jpg");
@@ -472,6 +471,7 @@ public class Controller {
 			styleList.set(13, System.getProperty("java.io.tmpdir") + n + "FXStyle/delete.png");
 			styleList.set(14, System.getProperty("java.io.tmpdir") + n + "FXStyle/delete_all.png");
 			styleList.set(15, System.getProperty("java.io.tmpdir") + n + "FXStyle/style.png");
+			styleList.set(15, System.getProperty("java.io.tmpdir") + n + "FXStyle/style.cfg");
 		}
 
 
@@ -519,9 +519,12 @@ public class Controller {
 
 		}
 
-		//Ricarichiamo la skin
-		UI gui = new UI();
-		//gui.setUI(playButton, stopButton, forwardButton, backwardButton, repeatButton, shuffleButton, trackImage, paneControls, artistLabel, titleLabel, albumLabel, genreLabel, yearLabel);
+		//Avviso cambio skin
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
+		alert.setTitle("FXPlayer");
+		alert.setHeaderText("Skin cambiata con successo!");
+		alert.setContentText("Riavviare il prgramma per i cambiamenti.");
+		alert.showAndWait();
 
 		System.out.println("Skin cambiata!");
 
@@ -531,7 +534,7 @@ public class Controller {
 
 	private void setTrackTime()
 	{
-		timeSlider.setOnMouseReleased((MouseEvent) -> 
+		timeSlider.setOnMouseReleased((MouseEvent) ->
 		{
 			this.totalS_on_moving = this.totalM * 60 + this.totalS;
 			player.stop();
