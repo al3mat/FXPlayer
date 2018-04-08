@@ -30,13 +30,15 @@ public class Controller {
 	public Button backwardButton = new Button();
 	public Button repeatButton = new Button();
 	public Button styleButton = new Button();
+	public Button addSong = new Button();
+	public Button removeSong = new Button();
+	public Button removeAllSongsButton = new Button();
 	public Label artistLabel = new Label();
 	public Label titleLabel = new Label();
 	public Label albumLabel = new Label();
 	public Label genreLabel = new Label();
 	public Label yearLabel = new Label();
 	public Label totalTimeLabel = new Label();
-	public Label sampleRateLabel = new Label();
 	public Label bitRateLabel = new Label();
 	public Label elapsedTimeLabel = new Label();
 	public ImageView trackImage = new ImageView();
@@ -51,17 +53,14 @@ public class Controller {
 	private UI grafica = new UI();
 
 
-	//aggiungo bottoni per gestire la playlist
-	public Button addSong = new Button();
-	public Button removeSong = new Button();
 	int position = 0, oldPosition = -1;
 	boolean playlistOn = true;
 	Random rand = new Random();
 
 	//Inizializziamo la sorgente audio
-	private String path = new String("src/sample/Hero.mp3");
-	private Media source = new Media(new File(path).toURI().toString());;
-	private MediaPlayer player = new MediaPlayer(source);
+	private String path = "";
+	private Media source;
+	private MediaPlayer player;
 
 	//Inizializziamo i parametri per i Tag
 	boolean gotSongTime = true, shuffleOn = false;												//cambiare quando si avanza di una canzone nella playlist
@@ -82,13 +81,13 @@ public class Controller {
 
 	public void initialize()
 	{
-		grafica.setUI(playButton, stopButton, forwardButton, backwardButton, repeatButton, shuffleButton, trackImage, paneControls, artistLabel, titleLabel, albumLabel, genreLabel, yearLabel);
+		grafica.setUI(playButton, stopButton, forwardButton, backwardButton, repeatButton, shuffleButton, trackImage, paneControls, artistLabel, titleLabel, albumLabel, genreLabel, yearLabel, addSong, removeSong, styleButton, removeAllSongsButton);
 	}
 
-	private void reloadUI(UI gui)
+/*	private void reloadUI(UI gui)
     {
-		gui.setUI(playButton, stopButton, forwardButton, backwardButton, repeatButton, shuffleButton, trackImage, paneControls, artistLabel, titleLabel, albumLabel, genreLabel, yearLabel);
-	}
+		gui.setUI(playButton, stopButton, forwardButton, backwardButton, repeatButton, shuffleButton, trackImage, paneControls, artistLabel, titleLabel, albumLabel, genreLabel, yearLabel, addSong, removeSong, styleButton, removeAllSongsButton);
+	}*/
 
 	public void addSongToPlaylist(ActionEvent e)
 	{
@@ -141,6 +140,12 @@ public class Controller {
 
                 stopped = true;
                 this.stop();
+
+                if (position>0){
+					path = pl.names.get(position-1);
+					source = new Media(new File(path).toURI().toString());
+					player = new MediaPlayer(source);
+				}
             }
 
             if (shuffleOn)
@@ -173,6 +178,12 @@ public class Controller {
 
                 stopped = true;
                 this.stop();
+
+                if (position<pl.nSongs()-1){
+					path = pl.names.get(position+1);
+					source = new Media(new File(path).toURI().toString());
+					player = new MediaPlayer(source);
+				}
             }
 
             if (shuffleOn)
@@ -288,25 +299,31 @@ public class Controller {
 				if (playlistOn && !mooved)
 				{
 					path = pl.names.get(position);
+					//source = new Media(new File(path).toURI().toString());
+					//player = new MediaPlayer(source);
 					player = pl.currentSong(position);
 				} else
 				    {
 					path = pl.names.get(clicked);
+					//source = new Media(new File(path).toURI().toString());
+					//player = new MediaPlayer(source);
 					player = pl.currentSong(clicked);
 					click = false;
 				}
-                gotSongTime = true;
-                mooved = false;
-                System.out.println(path);
-                source = new Media(new File(new String(path)).toURI().toString());//new Media(new File(path).toURI().toString());                          //sistemare l'assegnamento
-                getTrackInfo();
-                grafica.setPauseIcon(playButton);
-                timeSlider.setMax(player.getTotalDuration().toSeconds());
-                setVolume();
-                setTrackTime();
-                end = false;
-                player.play();
-            }
+			}
+
+
+            gotSongTime = true;
+            mooved = false;
+            System.out.println(path);
+            grafica.setPauseIcon(playButton);
+            timeSlider.setMax(player.getTotalDuration().toSeconds());
+            setVolume();
+            setTrackTime();
+            end = false;
+			getTrackInfo();
+            player.play();
+
 		}
 		ended = false;
 		stopped = false;
@@ -315,6 +332,18 @@ public class Controller {
 
 	public void setPlayButton(ActionEvent event) 
 	{
+	    System.out.println(pl.nSongs());
+
+	    if (path.isEmpty()){
+			if (playList.getItems().isEmpty()) {
+				System.out.println("Playlist vuota!");
+				return;
+			}
+			path = pl.names.get(0);
+			source = new Media(new File(path).toURI().toString());
+			player = new MediaPlayer(source);
+		}
+
 		if(!player.getStatus().equals(MediaPlayer.Status.PLAYING) && !player.getStatus().equals(MediaPlayer.Status.PAUSED))
 		{
 			if(click)
@@ -361,7 +390,7 @@ public class Controller {
 		}
 	}
 
-	public void getTrackInfo() 
+	public void getTrackInfo()
 	{
 		if (gotSongTime)
 		{
@@ -378,15 +407,17 @@ public class Controller {
 			{
 				totalTimeLabel.setText(totalM + ":0" + totalS);
 			}
+
+			bitrateCalc(totalM, totalS);
 		}
 
-		//Settiamo i tag sulla UI
-		trackImage.setImage((Image)source.getMetadata().get("image"));
-		artistLabel.setText("Artista: " + source.getMetadata().get("artist"));
-		titleLabel.setText("Titolo: " + source.getMetadata().get("title"));
-		albumLabel.setText("Album: " + source.getMetadata().get("album"));
-		genreLabel.setText("Genere: " + source.getMetadata().get("genre"));
-		yearLabel.setText("Anno: " + source.getMetadata().get("year"));
+			//Settiamo i tag sulla UI
+			trackImage.setImage((Image) source.getMetadata().get("image"));
+			artistLabel.setText("Artista: " + source.getMetadata().get("artist"));
+			titleLabel.setText("Titolo: " + source.getMetadata().get("title"));
+			albumLabel.setText("Album: " + source.getMetadata().get("album"));
+			genreLabel.setText("Genere: " + source.getMetadata().get("genre"));
+			yearLabel.setText("Anno: " + source.getMetadata().get("year"));
 	}
 
 	private void setVolume()
@@ -420,6 +451,10 @@ public class Controller {
 			styleList.add(9, System.getProperty("java.io.tmpdir") + n + "FXStyle/shuffle_off.png");
 			styleList.add(10, System.getProperty("java.io.tmpdir") + n + "FXStyle/shuffle_on.png");
 			styleList.add(11, System.getProperty("java.io.tmpdir") + n + "FXStyle/stop.png");
+			styleList.add(12, System.getProperty("java.io.tmpdir") + n + "FXStyle/add.png");
+			styleList.add(13, System.getProperty("java.io.tmpdir") + n + "FXStyle/delete.png");
+			styleList.add(14, System.getProperty("java.io.tmpdir") + n + "FXStyle/delete_all.png");
+			styleList.add(15, System.getProperty("java.io.tmpdir") + n + "FXStyle/style.png");
 		} else {
 			styleList.set(0, System.getProperty("java.io.tmpdir") + n + "FXStyle/background.jpg");
 			styleList.set(1, System.getProperty("java.io.tmpdir") + n + "FXStyle/defaultcover.jpg");
@@ -433,6 +468,10 @@ public class Controller {
 			styleList.set(9, System.getProperty("java.io.tmpdir") + n + "FXStyle/shuffle_off.png");
 			styleList.set(10, System.getProperty("java.io.tmpdir") + n + "FXStyle/shuffle_on.png");
 			styleList.set(11, System.getProperty("java.io.tmpdir") + n + "FXStyle/stop.png");
+			styleList.set(12, System.getProperty("java.io.tmpdir") + n + "FXStyle/add.png");
+			styleList.set(13, System.getProperty("java.io.tmpdir") + n + "FXStyle/delete.png");
+			styleList.set(14, System.getProperty("java.io.tmpdir") + n + "FXStyle/delete_all.png");
+			styleList.set(15, System.getProperty("java.io.tmpdir") + n + "FXStyle/style.png");
 		}
 
 
@@ -482,7 +521,7 @@ public class Controller {
 
 		//Ricarichiamo la skin
 		UI gui = new UI();
-		gui.setUI(playButton, stopButton, forwardButton, backwardButton, repeatButton, shuffleButton, trackImage, paneControls, artistLabel, titleLabel, albumLabel, genreLabel, yearLabel);
+		//gui.setUI(playButton, stopButton, forwardButton, backwardButton, repeatButton, shuffleButton, trackImage, paneControls, artistLabel, titleLabel, albumLabel, genreLabel, yearLabel);
 
 		System.out.println("Skin cambiata!");
 
@@ -669,4 +708,11 @@ public class Controller {
         wasPlaying = false;
         stopped = false;
     }
+
+    void bitrateCalc(int m, int s){
+		File f = new File(path);
+		int bitrate = (int)(f.length() * 8 / (m * 60 + s) / 1000);
+		bitRateLabel.setText(bitrate + "Kbps");
+		System.out.println(player.getRate());
+	}
 }

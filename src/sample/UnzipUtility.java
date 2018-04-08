@@ -21,14 +21,14 @@ public class UnzipUtility {
         }
         ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath));
         ZipEntry entry = zipIn.getNextEntry();
-        // iterates over entries in the zip file
+
         while (entry != null) {
             String filePath = destDirectory + File.separator + entry.getName();
             if (!entry.isDirectory()) {
-                // if the entry is a file, extracts it
+                //se è un file, lo estraggo
                 extractFile(zipIn, filePath);
             } else {
-                // if the entry is a directory, make the directory
+                // se è un direttorio, creo il direttorio
                 File dir = new File(filePath);
                 dir.mkdir();
             }

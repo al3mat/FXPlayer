@@ -22,6 +22,10 @@ public class UI {
     private Image repeatOneImg = new Image(getClass().getResourceAsStream("/sample/img/repeat_1.png"));
     private Image repeatAllImg = new Image(getClass().getResourceAsStream("/sample/img/repeat_all.png"));
     private Image albumImage = new Image(getClass().getResourceAsStream("/sample/img/defaultcover.jpg"));
+    private Image addImage = new Image(getClass().getResourceAsStream("/sample/img/add.png"));
+    private Image deleteImage = new Image(getClass().getResourceAsStream("/sample/img/delete.png"));
+    private Image deleteAllImage = new Image(getClass().getResourceAsStream("/sample/img/delete_all.png"));
+    private Image style = new Image(getClass().getResourceAsStream("/sample/img/style.png"));
 
     //Player Background
     Image image = new Image(getClass().getResourceAsStream("/sample/img/background.jpg"));
@@ -40,6 +44,10 @@ public class UI {
     private ImageView repeatOffView = new ImageView(repeatOffImg);
     private ImageView repeatOneView = new ImageView(repeatOneImg);
     private ImageView repeatAllView = new ImageView(repeatAllImg);
+    private ImageView addImageView = new ImageView(addImage);
+    private ImageView deleteImageView = new ImageView(deleteImage);
+    private ImageView deleteAllView = new ImageView(deleteAllImage);
+    private ImageView styleView = new ImageView(style);
 
     String fontType = "Consolas";
     Integer fontSize = 11;
@@ -72,7 +80,7 @@ public class UI {
         shuffleButton.setGraphic(shuffleOnView);
     }
 
-    public void setUI(Button playButton, Button stopButton, Button forwardButton, Button backwardButton, Button repeatButton, ToggleButton shuffleButton, ImageView trackImage, AnchorPane paneControls, Label artistLabel, Label titleLabel, Label albumLabel, Label genreLabel, Label yearLabel){
+    public void setUI(Button playButton, Button stopButton, Button forwardButton, Button backwardButton, Button repeatButton, ToggleButton shuffleButton, ImageView trackImage, AnchorPane paneControls, Label artistLabel, Label titleLabel, Label albumLabel, Label genreLabel, Label yearLabel, Button addSongButton, Button removeSongButton, Button styleButton, Button removeAllSongsButton){
 
         playButton.setGraphic(playView);
         stopButton.setGraphic(stopView);
@@ -82,6 +90,11 @@ public class UI {
         repeatButton.setGraphic(repeatOffView);
         trackImage.setImage(albumImage);
         paneControls.setBackground(background);
+        addSongButton.setGraphic(addImageView);
+        removeSongButton.setGraphic(deleteImageView);
+        styleButton.setGraphic(styleView);
+        removeAllSongsButton.setGraphic(deleteAllView);
+
 
         //Setting font
         artistLabel.setFont(new Font(fontType, fontSize));
