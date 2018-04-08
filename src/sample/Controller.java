@@ -40,6 +40,7 @@ public class Controller {
 	public Label genreLabel = new Label();
 	public Label yearLabel = new Label();
 	public Label totalTimeLabel = new Label();
+	public Label sampleRateLabel = new Label();
 	public Label bitRateLabel = new Label();
 	public Label elapsedTimeLabel = new Label();
 	public ImageView trackImage = new ImageView();
@@ -110,13 +111,21 @@ public class Controller {
 		}//controllare filepah per riproduzione del file corrente
 	}
 
+	public void setRemoveAllSongsButton(ActionEvent e)
+    {
+        if(e.getSource().equals(removeAllSongsButton) && pl != null)
+        {
+            playList.getItems().clear();
+            pl.removeAll();
+        }
+    }
 
 
 	public void removeSongFromPlaylist(ActionEvent e)
 	{
 		if(pl.nSongs() > 0)
 		{
-            pl.removeSong(clicked, clicked, position);
+            pl.removeSong(clicked, position);
             playList.getItems().remove(clicked);
             click = false;
         }
@@ -127,7 +136,7 @@ public class Controller {
 
 	public void setBackwardButton(ActionEvent e)
 	{
-	    if(e.getSource().equals(backwardButton))
+	    if(e.getSource().equals(backwardButton) && player != null)
 	    {
             if (player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED))
             {
@@ -165,7 +174,7 @@ public class Controller {
 
 	public void setForwardButton(ActionEvent e)
     {
-        if (e.getSource().equals(forwardButton))
+        if (e.getSource().equals(forwardButton) && player != null)
         {
             if (player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED))
             {
@@ -228,10 +237,13 @@ public class Controller {
 		}
 		else
 		    {
-		        loopStatus = 0;
-			    grafica.setShuffleOffIcon(shuffleButton);
-			    grafica.setRepeatOffIcon(repeatButton);
-			    shuffleOn = false;
+		        if(shuffleOn)
+		        {
+                    loopStatus = 0;
+                    grafica.setShuffleOffIcon(shuffleButton);
+                    grafica.setRepeatOffIcon(repeatButton);
+                    shuffleOn = false;
+                }
 		    }
 	}
 
@@ -282,7 +294,6 @@ public class Controller {
 	{
 		if (player.getStatus().equals(MediaPlayer.Status.PLAYING) && (!ended && !stopped))
 		{
-		    System.out.println("pausa\t"+elapsedM+"  "+elapsedS+"\t"+player.getStatus());
 			player.pause();
 			grafica.setPlayIcon(playButton);
 		}
@@ -293,26 +304,22 @@ public class Controller {
 				player.play();
 				grafica.setPauseIcon(playButton);
 			}
-			else {
+			else
+			    {
 				if (playlistOn && !mooved)
 				{
 					path = pl.names.get(position);
-					//source = new Media(new File(path).toURI().toString());
-					//player = new MediaPlayer(source);
 					player = pl.currentSong(position);
 				} else
 				    {
 					path = pl.names.get(clicked);
-					//source = new Media(new File(path).toURI().toString());
-					//player = new MediaPlayer(source);
 					player = pl.currentSong(clicked);
 					click = false;
+					gotSongTime = true;
 				}
 			}
 
-
-            gotSongTime = true;
-            mooved = false;
+			mooved = false;
             System.out.println(path);
             grafica.setPauseIcon(playButton);
             timeSlider.setMax(player.getTotalDuration().toSeconds());
@@ -330,10 +337,10 @@ public class Controller {
 
 	public void setPlayButton(ActionEvent event) 
 	{
-	    System.out.println(pl.nSongs());
-
-	    if (path.isEmpty()){
-			if (playList.getItems().isEmpty()) {
+	    if (path.isEmpty())
+	    {
+			if (playList.getItems().isEmpty())
+			{
 				System.out.println("Playlist vuota!");
 				return;
 			}
@@ -342,17 +349,10 @@ public class Controller {
 			player = new MediaPlayer(source);
 		}
 
-		if(!player.getStatus().equals(MediaPlayer.Status.PLAYING) && !player.getStatus().equals(MediaPlayer.Status.PAUSED))
+		if(!player.getStatus().equals(MediaPlayer.Status.PLAYING) || !player.getStatus().equals(MediaPlayer.Status.PAUSED))
 		{
 			if(click)
 			{
-				if(shuffleOn)
-				{
-					shuffleOn = false;
-					grafica.setShuffleOffIcon(shuffleButton);
-				}
-				//aggiunta
-
 			    playlistOn = false;
 			}
 			else
@@ -364,7 +364,6 @@ public class Controller {
 
 				if(shuffleOn)
 					this.randomGenerator();
-
 			}
 		}
 
@@ -375,20 +374,22 @@ public class Controller {
 
 	public void setStopButton(ActionEvent event)
     {
-
-		if (player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED))
-		{
-            stopped = true;
-            stopPressed = true;
-			this.stop();
-            loopStatus = 0;									//la funzione di loop si interrompe quando è premuto il tasto stop
-            grafica.setRepeatOffIcon(repeatButton);
-            grafica.setPlayIcon(playButton);
-            stopped = false;
-		}
+        if(player != null)
+        {
+            if (player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED))
+            {
+                stopped = true;
+                stopPressed = true;
+                this.stop();
+                loopStatus = 0;                                    //la funzione di loop si interrompe quando è premuto il tasto stop
+                grafica.setRepeatOffIcon(repeatButton);
+                grafica.setPlayIcon(playButton);
+                stopped = false;
+            }
+        }
 	}
 
-	public void getTrackInfo()
+	public void getTrackInfo() 
 	{
 		if (gotSongTime)
 		{
@@ -527,8 +528,6 @@ public class Controller {
 		alert.showAndWait();
 
 		System.out.println("Skin cambiata!");
-
-
 	}
 
 

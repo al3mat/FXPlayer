@@ -20,9 +20,9 @@ public class Playlist
 	}
 
 	
-	void removeSong(int start, int end, int playing)
-	{
-	    if(start == playing || end == playing || (playing <= end && playing >= start))
+	void removeSong(int pos, int playing)
+    {
+        if (pos == playing)
         {
             error = new Alert(Alert.AlertType.ERROR);
             error.setHeaderText("invalid selection");
@@ -31,41 +31,25 @@ public class Playlist
         }
         else
             {
-            if (start == end)
-            {
-                pl.remove(start);
-                names.remove(start);
-            } else {
-                if (start >= 0 && end > start)
-                {
-                    if (start == 0 && end == this.nSongs())
-                    {
-                        pl.removeAll(pl);
-                        names.removeAll(names);
-                    }
-                    else
-                        {
-                        for (; start < end; start++)
-                        {
-                            names.remove(start);
-                            pl.remove(start);
-                        }
-                    }
-                }
-            }
+            pl.remove(pos);
+            names.remove(pos);
         }
-	}//fissare il massimo di end a nsongs
+    }
+
+
 
 	
 	MediaPlayer currentSong(int i)
 	{
-		if(i < 0)
-			System.out.println("errore: inserito un numero negativo");
+        return pl.get(i);
+	}
 
-		return pl.get(i);
-	}//controllare, ma non credo sia cosм facile->sistemare il problema dell'errore
+	void removeAll()
+    {
+        names.clear();
+        pl.clear();
+    }
 
-	
 	int nSongs()
 	{
 		return pl.size();
