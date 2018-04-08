@@ -66,7 +66,6 @@ public class Controller {
 	//Inizializziamo i parametri per i Tag
 	boolean gotSongTime = true, shuffleOn = false;												//cambiare quando si avanza di una canzone nella playlist
 	int totalS = 0, totalM = 0, elapsedS = 0, elapsedM = 0;
-	Loop loop = new Loop();
 	boolean end = false;
 	Playlist pl = new Playlist();
 	int totalS_on_moving;
@@ -76,7 +75,7 @@ public class Controller {
 	listTitle lt = new listTitle();
 	int clicked;
 	boolean wasPlaying = false;
-	boolean stopped = false;
+	boolean stopped = false, stopPressed = false;
 
 	List<String> styleList = new ArrayList<>();
 	FileSelection fs = new FileSelection();
@@ -103,7 +102,6 @@ public class Controller {
 			for(pos = 0; pos < added.size()-dim; pos++)
 			{
 				pl.addSong(added.get(pos));
-				System.out.println("Added\t"+pl.names.get(pos));
 			}
 
 			dim = pl.nSongs();
@@ -159,7 +157,6 @@ public class Controller {
 
         this.assign();
         }
-	System.out.println("Backwarding in the playlist at position "+position);
 	}
 
 
@@ -192,8 +189,6 @@ public class Controller {
                             position = 0;
                         else
                             position++;
-
-                        System.out.println("nel caso no loop position vale  "+position);
                     }
                 }
                 else
@@ -203,17 +198,20 @@ public class Controller {
                         if(loopStatus != 2)
                             wasPlaying = false;
 
-                        System.out.println("caso di ultima canzone in nessun loop");
                         position = 0;
                     }
                 }
             }
+
         this.assign();
         }
     }
 
+
 	public void setShuffleButton(ActionEvent e)
 	{
+	    System.out.println("shuffle vale "+shuffleOn);
+
 		if (shuffleButton.isSelected() && loopStatus != 1)
 		{
 			grafica.setShuffleOnIcon(shuffleButton);
@@ -228,26 +226,21 @@ public class Controller {
 			    grafica.setRepeatOffIcon(repeatButton);
 			    shuffleOn = false;
 		    }
-		System.out.println("Shuffle " + shuffleOn);
 	}
 
 
 	public void setRepeatButton(ActionEvent e)
 	{
-//		if(!shuffleOn)
 		{
 		    if(loopStatus == 0)
 		    {
 		        loopStatus++;
                 grafica.setRepeatOneIcon(repeatButton);
-//                player.setCycleCount(AudioClip.INDEFINITE);
-                System.out.println("loopStatus = 1");
             }
             else
                 {
                 if (loopStatus == 1 && playlistOn)
                 {
-                    System.out.println("loopStatus = 1");
                     grafica.setRepeatAllIcon(repeatButton);
                     loopStatus++;
                 }
@@ -255,14 +248,18 @@ public class Controller {
                     {
                         if(loopStatus == 2)
                         {
-                            System.out.println("loopStatus = 0");
                             grafica.setRepeatOffIcon(repeatButton);
+
+                            System.out.println("quando premo stop loop shuffle vale "+shuffleOn);
+                            if(shuffleOn)
+                            {
+                                grafica.setShuffleOffIcon(shuffleButton);
+                                shuffleOn = false;
+                            }
                             loopStatus = 0;
                         }
                     }
             }
-
-			loop.loopCall(loopStatus, player);
 		}
 	}
 
@@ -285,37 +282,17 @@ public class Controller {
 				player.play();
 				grafica.setPauseIcon(playButton);
 			}
-			else
-			{
-				if(playlistOn && !mooved)
-				{
-				    System.out.println("caso play con shuffle posizione "+position+" filename "+pl.names.get(position));
-                    path = pl.names.get(position);
-                    player = pl.currentSong(position);
-                }
-                else
-                {
-                    path = pl.names.get(clicked);
-                    player = pl.currentSong(clicked);
-                    click = false;
-                }
-
-/*
-                mooved = false;
-
-				System.out.println(path);
-				source = new Media(new File(path).toURI().toString());//new Media(new File(path).toURI().toString());                          //sistemare l'assegnamento
-				getTrackInfo();
-
-/*				player.play();
-				grafica.setPauseIcon(playButton);
-				timeSlider.setMax(player.getTotalDuration().toSeconds());
-				setVolume();
-				setTrackTime();
-				end = false;
-*/			}
-
-
+			else {
+				if (playlistOn && !mooved) {
+					System.out.println("caso play con shuffle posizione " + position + " filename " + pl.names.get(position));
+					path = pl.names.get(position);
+					player = pl.currentSong(position);
+				} else {
+					path = pl.names.get(clicked);
+					player = pl.currentSong(clicked);
+					click = false;
+				}
+			}
 
             gotSongTime = true;
             mooved = false;
@@ -343,7 +320,6 @@ public class Controller {
 			if(click)
 			{
 			    playlistOn = false;
-				System.out.println("No songs in playlist, opened file " + path);
 			}
 			else
 			{
@@ -375,20 +351,18 @@ public class Controller {
             grafica.setRepeatOffIcon(repeatButton);
             grafica.setPlayIcon(playButton);
 		}
+
+		stopPressed = true;
 	}
 
 	public void getTrackInfo() 
 	{
-		//Calcoliamo la durata della canzone (timeM : timeS)
-		//DA RIFARE CON LA PLAYLIST
 		if (gotSongTime)
 		{
 			totalS = (int)player.getTotalDuration().toSeconds();
 			totalM = totalS / 60;
 			totalS -= totalM * 60;
 			gotSongTime=false;
-
-			System.out.println("la canzone "+position+" ha durata "+totalM+":"+totalS);
 
 			if (totalS > 9) 
 			{
@@ -470,15 +444,18 @@ public class Controller {
 		String zipFilePath = selectedFile.toString();
 		String destDirectory = System.getProperty("java.io.tmpdir") + n + "FXStyle";
 		UnzipUtility unzipper = new UnzipUtility();
-		try {
+		try
+        {
 			unzipper.unzip(zipFilePath, destDirectory);
-		} catch (Exception ex) {
-			//gestione degli errori
-			ex.printStackTrace();
 		}
+		catch (Exception ex)
+        {
+			ex.printStackTrace();
+		}	//gestione degli errori
 
 		//Controlliamo l'integrità dei file
-		for(int i=0; i<styleList.size(); i++){
+		for(int i=0; i<styleList.size(); i++)
+		{
 			check = new File(styleList.get(i));
 			if (!check.isFile() || !check.exists()){
 				System.out.println("Skin non è completa!");
@@ -487,7 +464,8 @@ public class Controller {
 		}
 
 		//Copiamo i file della Skin nella cartella del proggetto
-		for (int i=0;i<styleList.size();i++){
+		for (int i=0;i<styleList.size();i++)
+		{
 			check = new File(styleList.get(i));
 			Path file1 = Paths.get(styleList.get(i));
 			Path file2 = Paths.get(System.getProperty("user.dir") + "/src/sample/img/" + check.getName());
@@ -565,7 +543,6 @@ public class Controller {
 						    if(loopStatus == 0)
 						        grafica.setPlayIcon(playButton);
 
-							System.out.println("Ultimo caso di stop");
 							this.stop();
 
 							if(!shuffleOn)
@@ -609,7 +586,13 @@ public class Controller {
 	{
 		if(ended || stopped)
         {
-            System.out.println("canzone finita");
+            System.out.println("shuffleon "+shuffleOn+"\tstopped "+ stopped +"\tmooved " +mooved);
+            if(shuffleOn && stopPressed)
+            {
+            	System.out.println("shuffle disattivato nello stop");
+				grafica.setShuffleOffIcon(shuffleButton);
+				stopPressed = false;
+			}
 
             if(loopStatus != 1)
                 grafica.setPlayIcon(playButton);
@@ -622,28 +605,20 @@ public class Controller {
         timeSlider.setValue(0);
         player.setStartTime(javafx.util.Duration.seconds(0));
 
-
         if(!playlistOn)
 		    playlistOn = true;
 
 		if(loopStatus == 0)
         {
 			end = true;
-//            grafica.setRepeatOffIcon(repeatButton);
 			System.out.println("end");
 
 			if(!gotSongTime || (loopStatus != 1 && !gotSongTime))
 				gotSongTime = !gotSongTime;
 		}//se non siamo in un loop
-/*		else
-		{
-			if((loopStatus != 1))
-			{
-				if(!gotSongTime)
-					gotSongTime = !gotSongTime;
-			}
-		}
-*/		System.out.println(player.getStatus());
+        else
+            end = true;
+
 	}
 
 

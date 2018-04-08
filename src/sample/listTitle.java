@@ -1,6 +1,5 @@
 package sample;
 
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
@@ -19,10 +18,4 @@ public class listTitle
 
         lv.setItems(st);
     }
-
-    int isClicked()
-    {
-        return lv.getSelectionModel().getSelectedIndex();
-    }
-
 }

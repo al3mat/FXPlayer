@@ -55,23 +55,6 @@ public class Playlist
 	}//controllare, ma non credo sia cosм facile->sistemare il problema dell'errore
 
 	
-	MediaPlayer previousSong(int i)
-	{
-		if(i > 0)
-			return pl.get(i-1);
-		else
-			return pl.get(0);
-	}
-
-	MediaPlayer nextSong(int i)
-	{
-		if(i < this.nSongs())
-			return pl.get(i+1);
-		else
-			return pl.get(i);
-	}
-
-	
 	int nSongs()
 	{
 		return pl.size();
