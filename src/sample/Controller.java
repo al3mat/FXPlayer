@@ -87,7 +87,8 @@ public class Controller {
     {
         grafica.setUI(playButton, stopButton, forwardButton, backwardButton, repeatButton, shuffleButton, trackImage, paneControls, artistLabel, titleLabel, albumLabel, genreLabel, yearLabel, addSong, removeSong, styleButton, removeAllSongsButton, panePlaylist);
 
-        playList.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        playList.setOnMouseClicked(new EventHandler<MouseEvent>()
+        {
 
             @Override
             public void handle(MouseEvent click) {
@@ -120,7 +121,7 @@ public class Controller {
             dim = pl.nSongs();
 
             lt.takeTitles(pl.names);
-            playList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+            playList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
             playList.setOrientation(Orientation.VERTICAL);
             playList.setItems(lt.st);
         }//controllare filepah per riproduzione del file corrente
@@ -201,7 +202,8 @@ public class Controller {
                 stopped = true;
                 this.stop();
 
-                if (position<pl.nSongs()-1){
+                if (position<pl.nSongs()-1 && !shuffleOn)//modificato: aggiunto && !shuffleOn
+                {
                     path = pl.names.get(position+1);
                     source = new Media(new File(path).toURI().toString());
                     player = new MediaPlayer(source);
@@ -211,6 +213,9 @@ public class Controller {
             if (shuffleOn)
             {
                 this.randomGenerator();
+
+                gotSongTime = true;
+                getTrackInfo();//modificato
             }
             else
             {
@@ -325,7 +330,8 @@ public class Controller {
                 {
                     path = pl.names.get(position);
                     player = pl.currentSong(position);
-                } else
+                }
+                else
                 {
                     path = pl.names.get(clicked);
                     player = pl.currentSong(clicked);
@@ -700,7 +706,8 @@ public class Controller {
     {
         this.oldPosition = position;
 
-        do {
+        do
+        {
             position = rand.nextInt(pl.nSongs());
         }while(position > pl.nSongs()-1 || position == oldPosition);
     }
@@ -708,8 +715,8 @@ public class Controller {
 
     public void isClicked()
     {
-        if(playList.getFocusModel().getFocusedIndex() == playList.getSelectionModel().getSelectedIndex())
-            clicked = playList.getSelectionModel().getSelectedIndex();
+        //if(playList.getFocusModel().getFocusedIndex() == playList.getSelectionModel().getSelectedIndex())
+        clicked = playList.getSelectionModel().getSelectedIndex();
 
         click = true;
     }
@@ -718,7 +725,6 @@ public class Controller {
     void assign()
     {
         player = pl.currentSong(position);
-
         if(wasPlaying)
             this.playSong();
 
