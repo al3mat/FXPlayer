@@ -12,8 +12,8 @@
 <?import javafx.scene.text.Font?>
 
 <SplitPane dividerPositions="0.0" maxHeight="-Infinity" maxWidth="400.0" minHeight="310.0" minWidth="400.0" orientation="VERTICAL" prefHeight="600.0" prefWidth="400.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
-  <items>
-    <AnchorPane fx:id="paneControls" maxHeight="200.0" minHeight="200.0" prefHeight="200.0">
+   <items>
+      <AnchorPane fx:id="paneControls" maxHeight="200.0" minHeight="200.0" prefHeight="200.0">
          <children>
             <ImageView fx:id="trackImage" fitHeight="120.0" fitWidth="120.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                <effect>
@@ -80,7 +80,7 @@
             <ToggleButton fx:id="shuffleButton" layoutX="20.0" layoutY="175.0" mnemonicParsing="false" onAction="#setShuffleButton" style="-fx-background-color: transparent;" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="165.0" />
             <Slider fx:id="volumeSlider" blendMode="DIFFERENCE" blockIncrement="1.0" majorTickUnit="50.0" orientation="VERTICAL" prefHeight="120.0" showTickMarks="true" snapToTicks="true" value="100.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="10.0" />
          </children></AnchorPane>
-    <AnchorPane fx:id="panePlaylist" minHeight="100.0" prefHeight="390.0">
+      <AnchorPane fx:id="panePlaylist" minHeight="100.0" prefHeight="390.0">
          <children>
             <ListView fx:id="playList" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent; -fx-selection-bar: #111111;" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
             <Button fx:id="addSong" blendMode="SCREEN" layoutX="14.0" layoutY="363.0" maxHeight="20.0" maxWidth="20.0" mnemonicParsing="false" onAction="#addSongToPlaylist" prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" />
@@ -93,5 +93,5 @@
                </font>
             </Label>
          </children></AnchorPane>
-  </items>
+   </items>
 </SplitPane>
