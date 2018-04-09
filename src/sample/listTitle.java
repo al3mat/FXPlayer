@@ -26,6 +26,11 @@ public class listTitle
         }
 
         st = FXCollections.observableArrayList(nameList);
+        clearNameList();
         lv.setItems(st);
+    }
+
+    void clearNameList(){
+        nameList.clear();
     }
 }

@@ -127,6 +127,7 @@ public class Controller {
             if (e.getSource().equals(removeAllSongsButton)) {
                 playList.getItems().clear();
                 pl.removeAll();
+                lt.clearNameList();
             }
         }
         else
@@ -181,12 +182,6 @@ public class Controller {
 
                 stopped = true;
                 this.stop();
-
-                if (position>0){
-                    path = pl.names.get(position-1);
-                    source = new Media(new File(path).toURI().toString());
-                    player = new MediaPlayer(source);
-                }
             }
 
             if (shuffleOn)
@@ -227,13 +222,6 @@ public class Controller {
 
                 stopped = true;
                 this.stop();
-
-                if (position<pl.nSongs()-1 && !shuffleOn)//modificato: aggiunto && !shuffleOn
-                {
-                    path = pl.names.get(position+1);
-                    source = new Media(new File(path).toURI().toString());
-                    player = new MediaPlayer(source);
-                }
             }
 
             if (shuffleOn)
@@ -499,13 +487,41 @@ public class Controller {
             bitrateCalc(totalM, totalS);
         }
 
-        //Settiamo i tag sulla UI
-        trackImage.setImage((Image) source.getMetadata().get("image"));
-        artistLabel.setText("Artista: " + source.getMetadata().get("artist"));
-        titleLabel.setText("Titolo: " + source.getMetadata().get("title"));
-        albumLabel.setText("Album: " + source.getMetadata().get("album"));
-        genreLabel.setText("Genere: " + source.getMetadata().get("genre"));
-        yearLabel.setText("Anno: " + source.getMetadata().get("year"));
+        //Settiamo i tag sulla UI dopo aver fatto i controlli sui dati ricevuti
+        if (pl.currentSong(position).getMedia().getMetadata().get("image")==null)
+            grafica.setTrackImage(trackImage);
+        else
+            trackImage.setImage((Image) pl.currentSong(position).getMedia().getMetadata().get("image"));
+
+        if(pl.currentSong(position).getMedia().getMetadata().get("artist") == null)
+            artistLabel.setText("Artista: -");
+        else
+            artistLabel.setText("Artista: " + pl.currentSong(position).getMedia().getMetadata().get("artist"));
+
+        if (pl.currentSong(position).getMedia().getMetadata().get("title") == null)
+            titleLabel.setText("Titolo: -");
+        else
+            titleLabel.setText("Titolo: " + pl.currentSong(position).getMedia().getMetadata().get("title"));
+
+        if (pl.currentSong(position).getMedia().getMetadata().get("title") == null)
+            titleLabel.setText("Titolo: -");
+        else
+            titleLabel.setText("Titolo: " + pl.currentSong(position).getMedia().getMetadata().get("title"));
+
+        if (pl.currentSong(position).getMedia().getMetadata().get("album") == null)
+            albumLabel.setText("Album: -");
+        else
+            albumLabel.setText("Album: " + pl.currentSong(position).getMedia().getMetadata().get("album"));
+
+        if (pl.currentSong(position).getMedia().getMetadata().get("genre") == null)
+            genreLabel.setText("Genere: -");
+        else
+            genreLabel.setText("Genere: " + pl.currentSong(position).getMedia().getMetadata().get("genre"));
+
+        if (pl.currentSong(position).getMedia().getMetadata().get("year") == null)
+            yearLabel.setText("Anno: -");
+        else
+            yearLabel.setText("Anno: " + pl.currentSong(position).getMedia().getMetadata().get("year"));
     }
 
     private void setVolume()
@@ -594,6 +610,12 @@ public class Controller {
         {
             check = new File(styleList.get(i));
             if (!check.isFile() || !check.exists()){
+                Alert alertError = new Alert(Alert.AlertType.ERROR);
+                alertError.setTitle("FXPlayer");
+                alertError.setHeaderText("Skin non è completa!");
+                alertError.setContentText("Controllare il file .zip");
+                alertError.showAndWait();
+
                 System.out.println("Skin non è completa!");
                 return;
             }
@@ -613,7 +635,7 @@ public class Controller {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("FXPlayer");
         alert.setHeaderText("Skin cambiata con successo!");
-        alert.setContentText("Riavviare il prgramma per i cambiamenti.");
+        alert.setContentText("Riavviare il programma per i cambiamenti.");
         alert.showAndWait();
 
         System.out.println("Skin cambiata!");
