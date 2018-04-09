@@ -106,8 +106,6 @@ public class Controller {
 
         if(added != null)
         {
-            //			path = added.get(position);
-
             for(pos = 0; pos < added.size()-dim; pos++)
             {
                 pl.addSong(added.get(pos));
@@ -124,7 +122,8 @@ public class Controller {
 
     public void setRemoveAllSongsButton(ActionEvent e)
     {
-        if(e.getSource().equals(repeatButton) && player != null) {
+        System.out.println(pl.nSongs());
+        if(e.getSource().equals(removeAllSongsButton) && pl.nSongs()>0) {
             if (e.getSource().equals(removeAllSongsButton)) {
                 playList.getItems().clear();
                 pl.removeAll();
@@ -283,16 +282,19 @@ public class Controller {
 
     public void setShuffleButton(ActionEvent e)
     {
-        if(e.getSource().equals(repeatButton) && player != null) {
-
-
-            if (shuffleButton.isSelected() && loopStatus != 1 && playlistOn) {
+        if(e.getSource().equals(shuffleButton) && pl.nSongs()>0)
+        {
+            if (shuffleButton.isSelected() && loopStatus != 1 && playlistOn)
+            {
                 grafica.setShuffleOnIcon(shuffleButton);
                 loopStatus = 2;
                 grafica.setRepeatAllIcon(repeatButton);
                 shuffleOn = shuffleButton.isSelected();
-            } else {
-                if (shuffleOn) {
+            }
+            else
+            {
+                if (shuffleOn)
+                {
                     loopStatus = 0;
                     grafica.setShuffleOffIcon(shuffleButton);
                     grafica.setRepeatOffIcon(repeatButton);
@@ -319,21 +321,30 @@ public class Controller {
                 if (loopStatus == 0) {
                     loopStatus++;
                     grafica.setRepeatOneIcon(repeatButton);
-                } else {
-                    if (loopStatus == 1 && playlistOn) {
+                }
+                else
+                {
+                    if (loopStatus == 1 && playlistOn)
+                    {
                         grafica.setRepeatAllIcon(repeatButton);
                         loopStatus++;
-                    } else {
-                        if (loopStatus == 1 && !playlistOn) {
+                        click = false;
+                    }
+                    else
+                    {
+                        if (loopStatus == 1 && !playlistOn)
+                        {
                             loopStatus = 0;
                             grafica.setRepeatOffIcon(repeatButton);
                         }
 
-                        if (loopStatus == 2) {
+                        if (loopStatus == 2)
+                        {
                             grafica.setRepeatOffIcon(repeatButton);
 
                             System.out.println("quando premo stop loop shuffle vale " + shuffleOn);
-                            if (shuffleOn) {
+                            if (shuffleOn)
+                            {
                                 grafica.setShuffleOffIcon(shuffleButton);
                                 shuffleOn = false;
                             }
@@ -407,10 +418,10 @@ public class Controller {
         {
             if (playList.getItems().isEmpty())
             {
-                    error = new Alert(Alert.AlertType.WARNING);
-                    error.setHeaderText("no songs in playlist");
-                    error.setContentText("impossibile riprodurre brani: non ne sono presenti in playlist");
-                    error.showAndWait();
+                error = new Alert(Alert.AlertType.WARNING);
+                error.setHeaderText("no songs in playlist");
+                error.setContentText("impossibile riprodurre brani: non ne sono presenti in playlist");
+                error.showAndWait();
 
                 return;
             }
@@ -637,7 +648,6 @@ public class Controller {
 
                     if(playlistOn && position != pl.nSongs()-1 )
                     {
-                        System.out.println("Chiamata a stop non in ultima canzone");
                         this.stop();
 
                         if(!shuffleOn && loopStatus != 1)
@@ -653,7 +663,7 @@ public class Controller {
                     }
                     else
                     {
-                        if(loopStatus == 2 && playlistOn && (position == pl.nSongs()-1))//se siamo in loop di una playlist e siamo arrivati all'ultima canzone
+                        if(loopStatus == 2 &&  position == pl.nSongs()-1)//se siamo in loop di una playlist e siamo arrivati all'ultima canzone//playlistOn && rimosso
                         {
                             if(shuffleOn)
                                 this.randomGenerator();
@@ -676,7 +686,13 @@ public class Controller {
                                 if(loopStatus != 1)
                                     position = 0;
                                 else
-                                    position = clicked;
+                                {
+                                    if(click)
+                                    {
+                                        position = clicked;
+                                        // click = false;
+                                    }//modificato->aggiunto if
+                                }
 
                                 gotSongTime = true;
                             }
@@ -725,6 +741,7 @@ public class Controller {
                 grafica.setPlayIcon(playButton);
         }
 
+        click = false;
         player.stop();
         elapsedS = 0;
         elapsedM = 0;
