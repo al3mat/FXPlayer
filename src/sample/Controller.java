@@ -379,7 +379,6 @@ public class Controller {
                 {
                     path = pl.names.get(clicked);
                     player = pl.currentSong(clicked);
-                    click = false;
                     gotSongTime = true;
                 }
             }
@@ -713,8 +712,7 @@ public class Controller {
                                     if(click)
                                     {
                                         position = clicked;
-                                        // click = false;
-                                    }//modificato->aggiunto if
+                                    }
                                 }
 
                                 gotSongTime = true;
@@ -764,7 +762,9 @@ public class Controller {
                 grafica.setPlayIcon(playButton);
         }
 
-        click = false;
+        if(loopStatus != 1 && click)//aggiunto
+            click = false;
+
         player.stop();
         elapsedS = 0;
         elapsedM = 0;
