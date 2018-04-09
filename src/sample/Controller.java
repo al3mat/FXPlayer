@@ -128,6 +128,7 @@ public class Controller {
         {
             playList.getItems().clear();
             pl.removeAll();
+            lt.clearNameList();
         }
     }
 
@@ -525,6 +526,12 @@ public class Controller {
         {
             check = new File(styleList.get(i));
             if (!check.isFile() || !check.exists()){
+                Alert alertError = new Alert(Alert.AlertType.ERROR);
+                alertError.setTitle("FXPlayer");
+                alertError.setHeaderText("Skin !");
+                alertError.setContentText("Riavviare il prgramma per i cambiamenti.");
+                alertError.showAndWait();
+
                 System.out.println("Skin non è completa!");
                 return;
             }
