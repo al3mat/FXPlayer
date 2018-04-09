@@ -1,60 +1,50 @@
-package sample;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
+    package sample;
+    import java.io.File;
+    import java.util.List;
+    import java.util.Vector;
 
-import javafx.scene.control.Alert;
-//import javafx.scene.control.Button;
-import javafx.scene.control.Alert.AlertType;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.stage.Stage;
+    import javafx.scene.control.Alert;
+    import javafx.scene.control.Alert.AlertType;
+    import javafx.stage.FileChooser;
+    import javafx.stage.FileChooser.ExtensionFilter;
+    import javafx.stage.Stage;
 
-public class FileSelection
-{
-    List<File> selected;
-    FileChooser fc;
-    List<String> filename = new Vector<>();
-    Alert error;
-    boolean set = false, addPlaylist = false;
-    ExtensionFilter ef = new ExtensionFilter("AudioFiles", "*.mp3", "*.wav");
-    int pos;
-
-
-    void start(Stage stage)
+    class FileSelection
     {
-        fc = new FileChooser();
-        fc.setTitle("file chooser");
-        fc.getExtensionFilters().add(ef);
+        List<String> filename = new Vector<>();
+        private ExtensionFilter ef = new ExtensionFilter("AudioFiles", "*.mp3", "*.wav");
 
-        addPlaylist = false;
 
-        selected = fc.showOpenMultipleDialog(stage);
-
-        if(selected != null)
+        void start(Stage stage)
         {
-            for (pos = 0; pos < selected.size(); pos++)
+            FileChooser fc = new FileChooser();
+            fc.setTitle("file chooser");
+            fc.getExtensionFilters().add(ef);
+
+            List<File> selected = fc.showOpenMultipleDialog(stage);
+
+            if(selected != null)
             {
-                filename.add(pos, selected.get(pos).toString());
-                fileController(pos);
+                int pos;
+                for (pos = 0; pos < selected.size(); pos++)
+                {
+                    filename.add(pos, selected.get(pos).toString());
+                    fileController(pos);
+                }
+            }
+        }
+
+
+        private void fileController(int i)
+        {
+            if(!filename.get(i).contains(".mp3") && !filename.get(i).contains(".wav"))
+            {
+                filename = null;
+                Alert error = new Alert(AlertType.ERROR);
+                error.setHeaderText("invalid selection");
+                error.setContentText("selezionata tipologia di file invalida, selezionare un file con estensione:\n.mp3\n.wav\n.aiff");
+                error.showAndWait();
+                System.out.println("errore: inserito file non audio");
             }
         }
     }
-
-
-    boolean fileController(int i)
-    {
-        if(!filename.get(i).contains(".mp3") && !filename.get(i).contains(".wav"))
-        {
-            filename = null;
-            error = new Alert(AlertType.ERROR);
-            error.setHeaderText("invalid selection");
-            error.setContentText("selezionata tipologia di file invalida, selezionare un file con estensione:\n.mp3\n.wav\n.aiff");
-            error.showAndWait();
-            System.out.println("errore: inserito file non audio");
-            return false;
-        }
-        return true;
-    }
-}
