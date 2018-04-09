@@ -354,6 +354,7 @@
                 {
                     player.play();
                     grafica.setPauseIcon(playButton);
+
                 }
                 else
                 {
@@ -369,6 +370,7 @@
                         path = pl.names.get(clicked);
                         player = pl.currentSong(clicked);
                         gotSongTime = true;
+                        playlistOn = true;
                         getTrackInfo(clicked);
                         playList.getSelectionModel().select(clicked);
                         position = clicked;
