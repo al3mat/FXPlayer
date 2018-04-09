@@ -82,7 +82,7 @@
          </children></AnchorPane>
     <AnchorPane fx:id="panePlaylist" minHeight="100.0" prefHeight="390.0">
          <children>
-            <ListView fx:id="playList" onMouseClicked="#isClicked" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent; -fx-selection-bar: #111111;" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <ListView fx:id="playList" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent; -fx-selection-bar: #111111;" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
             <Button fx:id="addSong" blendMode="SCREEN" layoutX="14.0" layoutY="363.0" maxHeight="20.0" maxWidth="20.0" mnemonicParsing="false" onAction="#addSongToPlaylist" prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" />
             <Button fx:id="removeSong" blendMode="SCREEN" layoutX="20.0" layoutY="370.0" maxHeight="20.0" maxWidth="20.0" mnemonicParsing="false" onAction="#removeSongFromPlaylist" prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="20.0" />
             <Button fx:id="removeAllSongsButton" mnemonicParsing="false" onAction="#setRemoveAllSongsButton" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="40.0" />

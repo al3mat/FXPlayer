@@ -29,7 +29,6 @@ public class FileSelection
 
         addPlaylist = false;
 
-        //		while(selected.equals(null) || !this.fileController())
         selected = fc.showOpenMultipleDialog(stage);
 
         if(selected != null)
@@ -37,8 +36,6 @@ public class FileSelection
             for (pos = 0; pos < selected.size(); pos++)
             {
                 filename.add(pos, selected.get(pos).toString());
-                System.out.println("selezionato il brano\t"+filename.get(pos));
-
                 fileController(pos);
             }
         }

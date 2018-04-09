@@ -50,6 +50,7 @@ public class Controller {
     public ToggleButton shuffleButton = new ToggleButton();
     public AnchorPane paneControls = new AnchorPane();
     public AnchorPane panePlaylist = new AnchorPane();
+    Alert error;
 
     int loopStatus = 0;
     boolean ended = false;
@@ -87,19 +88,14 @@ public class Controller {
     {
         grafica.setUI(playButton, stopButton, forwardButton, backwardButton, repeatButton, shuffleButton, trackImage, paneControls, artistLabel, titleLabel, albumLabel, genreLabel, yearLabel, addSong, removeSong, styleButton, removeAllSongsButton, panePlaylist);
 
-        playList.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        playList.setOnMouseClicked(new EventHandler<MouseEvent>()
+        {
 
             @Override
             public void handle(MouseEvent click) {
-
-                if (click.getClickCount() == 2) {
-
-                    //da gestire...forse...
-
-                }
+                isClicked();
             }
         });
-
 
     }
 
@@ -120,7 +116,7 @@ public class Controller {
             dim = pl.nSongs();
 
             lt.takeTitles(pl.names);
-            playList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+            playList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
             playList.setOrientation(Orientation.VERTICAL);
             playList.setItems(lt.st);
         }//controllare filepah per riproduzione del file corrente
@@ -140,8 +136,18 @@ public class Controller {
     {
         if(pl.nSongs() > 0)
         {
-            pl.removeSong(clicked, position);
-            playList.getItems().remove(clicked);
+            if(clicked != position) {
+                pl.removeSong(clicked, position);
+                playList.getItems().remove(clicked);
+            }
+            else
+            {
+                error = new Alert(Alert.AlertType.ERROR);
+                error.setHeaderText("invalid selection");
+                error.setContentText("selezionato brano in riproduzione, impossibile rimuoverlo dalla playlist");
+                error.showAndWait();
+            }
+
             click = false;
         }
         else
@@ -201,7 +207,8 @@ public class Controller {
                 stopped = true;
                 this.stop();
 
-                if (position<pl.nSongs()-1){
+                if (position<pl.nSongs()-1 && !shuffleOn)//modificato: aggiunto && !shuffleOn
+                {
                     path = pl.names.get(position+1);
                     source = new Media(new File(path).toURI().toString());
                     player = new MediaPlayer(source);
@@ -211,6 +218,9 @@ public class Controller {
             if (shuffleOn)
             {
                 this.randomGenerator();
+
+                gotSongTime = true;
+                getTrackInfo();//modificato
             }
             else
             {
@@ -265,38 +275,32 @@ public class Controller {
 
     public void setRepeatButton(ActionEvent e)
     {
+        if(e.getSource().equals(repeatButton) && player != null)
         {
-            if(loopStatus == 0)
             {
-                loopStatus++;
-                grafica.setRepeatOneIcon(repeatButton);
-            }
-            else
-            {
-                if (loopStatus == 1 && playlistOn)
-                {
-                    grafica.setRepeatAllIcon(repeatButton);
+                if (loopStatus == 0) {
                     loopStatus++;
-                }
-                else
-                {
-                    if(loopStatus == 1 && !playlistOn)
-                    {
-                        loopStatus = 0;
-                        grafica.setRepeatOffIcon(repeatButton);
-                    }
-
-                    if(loopStatus == 2)
-                    {
-                        grafica.setRepeatOffIcon(repeatButton);
-
-                        System.out.println("quando premo stop loop shuffle vale "+shuffleOn);
-                        if(shuffleOn)
-                        {
-                            grafica.setShuffleOffIcon(shuffleButton);
-                            shuffleOn = false;
+                    grafica.setRepeatOneIcon(repeatButton);
+                } else {
+                    if (loopStatus == 1 && playlistOn) {
+                        grafica.setRepeatAllIcon(repeatButton);
+                        loopStatus++;
+                    } else {
+                        if (loopStatus == 1 && !playlistOn) {
+                            loopStatus = 0;
+                            grafica.setRepeatOffIcon(repeatButton);
                         }
-                        loopStatus = 0;
+
+                        if (loopStatus == 2) {
+                            grafica.setRepeatOffIcon(repeatButton);
+
+                            System.out.println("quando premo stop loop shuffle vale " + shuffleOn);
+                            if (shuffleOn) {
+                                grafica.setShuffleOffIcon(shuffleButton);
+                                shuffleOn = false;
+                            }
+                            loopStatus = 0;
+                        }
                     }
                 }
             }
@@ -325,7 +329,8 @@ public class Controller {
                 {
                     path = pl.names.get(position);
                     player = pl.currentSong(position);
-                } else
+                }
+                else
                 {
                     path = pl.names.get(clicked);
                     player = pl.currentSong(clicked);
@@ -700,7 +705,8 @@ public class Controller {
     {
         this.oldPosition = position;
 
-        do {
+        do
+        {
             position = rand.nextInt(pl.nSongs());
         }while(position > pl.nSongs()-1 || position == oldPosition);
     }
@@ -708,17 +714,17 @@ public class Controller {
 
     public void isClicked()
     {
-        if(playList.getFocusModel().getFocusedIndex() == playList.getSelectionModel().getSelectedIndex())
+        if(playList.getItems().size() != 0)
+        {
             clicked = playList.getSelectionModel().getSelectedIndex();
-
-        click = true;
+            click = true;
+        }
     }
 
 
     void assign()
     {
         player = pl.currentSong(position);
-
         if(wasPlaying)
             this.playSong();
 
