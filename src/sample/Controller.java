@@ -50,6 +50,7 @@ public class Controller {
     public ToggleButton shuffleButton = new ToggleButton();
     public AnchorPane paneControls = new AnchorPane();
     public AnchorPane panePlaylist = new AnchorPane();
+    Alert error;
 
     int loopStatus = 0;
     boolean ended = false;
@@ -92,15 +93,9 @@ public class Controller {
 
             @Override
             public void handle(MouseEvent click) {
-
-                if (click.getClickCount() == 2) {
-
-                    //da gestire...forse...
-
-                }
+                isClicked();
             }
         });
-
 
     }
 
@@ -141,8 +136,18 @@ public class Controller {
     {
         if(pl.nSongs() > 0)
         {
-            pl.removeSong(clicked, position);
-            playList.getItems().remove(clicked);
+            if(clicked != position) {
+                pl.removeSong(clicked, position);
+                playList.getItems().remove(clicked);
+            }
+            else
+            {
+                error = new Alert(Alert.AlertType.ERROR);
+                error.setHeaderText("invalid selection");
+                error.setContentText("selezionato brano in riproduzione, impossibile rimuoverlo dalla playlist");
+                error.showAndWait();
+            }
+
             click = false;
         }
         else
@@ -270,38 +275,32 @@ public class Controller {
 
     public void setRepeatButton(ActionEvent e)
     {
+        if(e.getSource().equals(repeatButton) && player != null)
         {
-            if(loopStatus == 0)
             {
-                loopStatus++;
-                grafica.setRepeatOneIcon(repeatButton);
-            }
-            else
-            {
-                if (loopStatus == 1 && playlistOn)
-                {
-                    grafica.setRepeatAllIcon(repeatButton);
+                if (loopStatus == 0) {
                     loopStatus++;
-                }
-                else
-                {
-                    if(loopStatus == 1 && !playlistOn)
-                    {
-                        loopStatus = 0;
-                        grafica.setRepeatOffIcon(repeatButton);
-                    }
-
-                    if(loopStatus == 2)
-                    {
-                        grafica.setRepeatOffIcon(repeatButton);
-
-                        System.out.println("quando premo stop loop shuffle vale "+shuffleOn);
-                        if(shuffleOn)
-                        {
-                            grafica.setShuffleOffIcon(shuffleButton);
-                            shuffleOn = false;
+                    grafica.setRepeatOneIcon(repeatButton);
+                } else {
+                    if (loopStatus == 1 && playlistOn) {
+                        grafica.setRepeatAllIcon(repeatButton);
+                        loopStatus++;
+                    } else {
+                        if (loopStatus == 1 && !playlistOn) {
+                            loopStatus = 0;
+                            grafica.setRepeatOffIcon(repeatButton);
                         }
-                        loopStatus = 0;
+
+                        if (loopStatus == 2) {
+                            grafica.setRepeatOffIcon(repeatButton);
+
+                            System.out.println("quando premo stop loop shuffle vale " + shuffleOn);
+                            if (shuffleOn) {
+                                grafica.setShuffleOffIcon(shuffleButton);
+                                shuffleOn = false;
+                            }
+                            loopStatus = 0;
+                        }
                     }
                 }
             }
@@ -715,10 +714,11 @@ public class Controller {
 
     public void isClicked()
     {
-        //if(playList.getFocusModel().getFocusedIndex() == playList.getSelectionModel().getSelectedIndex())
-        clicked = playList.getSelectionModel().getSelectedIndex();
-
-        click = true;
+        if(playList.getItems().size() != 0)
+        {
+            clicked = playList.getSelectionModel().getSelectedIndex();
+            click = true;
+        }
     }
 
 
