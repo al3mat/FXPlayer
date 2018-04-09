@@ -68,35 +68,39 @@ public class UI {
     Integer fontSize = Integer.valueOf(config.get(1));
     String playlistColor = config.get(2);
 
-    public void setPlayIcon(Button playButton){
+    void setPlayIcon(Button playButton){
         playButton.setGraphic(playView);
     }
 
-    public void setPauseIcon(Button pauseButton){
+    void setPauseIcon(Button pauseButton){
         pauseButton.setGraphic(pauseView);
     }
 
-    public void setRepeatOffIcon(Button shuffleButton){
+    void setRepeatOffIcon(Button shuffleButton){
         shuffleButton.setGraphic(repeatOffView);
     }
 
-    public void setRepeatOneIcon(Button shuffleButton){
+    void setRepeatOneIcon(Button shuffleButton){
         shuffleButton.setGraphic(repeatOneView);
     }
 
-    public void setRepeatAllIcon(Button shuffleButton){
+    void setRepeatAllIcon(Button shuffleButton){
         shuffleButton.setGraphic(repeatAllView);
     }
 
-    public void setShuffleOffIcon(ToggleButton shuffleButton){
+    void setShuffleOffIcon(ToggleButton shuffleButton){
         shuffleButton.setGraphic(shuffleOffView);
     }
 
-    public void setShuffleOnIcon(ToggleButton shuffleButton){
+    void setShuffleOnIcon(ToggleButton shuffleButton){
         shuffleButton.setGraphic(shuffleOnView);
     }
 
-    public void setUI(Button playButton, Button stopButton, Button forwardButton, Button backwardButton, Button repeatButton, ToggleButton shuffleButton, ImageView trackImage, AnchorPane paneControls, Label artistLabel, Label titleLabel, Label albumLabel, Label genreLabel, Label yearLabel, Button addSongButton, Button removeSongButton, Button styleButton, Button removeAllSongsButton, AnchorPane panePlaylist){
+    void setTrackImage(ImageView trackImage){
+        trackImage.setImage(albumImage);
+    }
+
+    void setUI(Button playButton, Button stopButton, Button forwardButton, Button backwardButton, Button repeatButton, ToggleButton shuffleButton, ImageView trackImage, AnchorPane paneControls, Label artistLabel, Label titleLabel, Label albumLabel, Label genreLabel, Label yearLabel, Button addSongButton, Button removeSongButton, Button styleButton, Button removeAllSongsButton, AnchorPane panePlaylist){
 
         playButton.setGraphic(playView);
         stopButton.setGraphic(stopView);
