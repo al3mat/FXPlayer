@@ -2,6 +2,7 @@ package sample;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javafx.scene.control.Alert;
 //import javafx.scene.control.Button;
@@ -14,7 +15,7 @@ public class FileSelection
 {
     List<File> selected;
     FileChooser fc;
-    List<String> filename = new ArrayList<String>();
+    List<String> filename = new Vector<>();
     Alert error;
     boolean set = false, addPlaylist = false;
     ExtensionFilter ef = new ExtensionFilter("AudioFiles", "*.mp3", "*.wav");

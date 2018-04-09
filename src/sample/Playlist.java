@@ -9,8 +9,8 @@ import javafx.scene.media.MediaPlayer;
 
 public class Playlist
 {
-    List<MediaPlayer> pl = new ArrayList<>();
-    List<String> names = new ArrayList<>();
+    List<MediaPlayer> pl = new Vector<>();
+    List<String> names = new Vector<>();
     Alert error;
 
     void addSong(String name)

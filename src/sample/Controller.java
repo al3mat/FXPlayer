@@ -474,6 +474,7 @@ public class Controller {
             totalM = totalS / 60;
             totalS -= totalM * 60;
             gotSongTime=false;
+            System.out.println("dura   "+totalM+":"+totalS);
 
             if (totalS > 9)
             {
@@ -767,6 +768,8 @@ public class Controller {
         player.stop();
         elapsedS = 0;
         elapsedM = 0;
+        gotSongTime = true;
+//        getTrackInfo();
         this.printTime();
         timeSlider.setValue(0);
         player.setStartTime(javafx.util.Duration.seconds(0));
