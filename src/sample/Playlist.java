@@ -7,20 +7,20 @@ import javafx.scene.control.Alert;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
-public class Playlist 
+public class Playlist
 {
-	List<MediaPlayer> pl = new ArrayList<>();
-	List<String> names = new ArrayList<>();
-	Alert error;
+    List<MediaPlayer> pl = new ArrayList<>();
+    List<String> names = new ArrayList<>();
+    Alert error;
 
-	void addSong(String name)
-	{	
-		names.add(name);
-		pl.add(new MediaPlayer(new Media(new File(name).toURI().toString())));
-	}
+    void addSong(String name)
+    {
+        names.add(name);
+        pl.add(new MediaPlayer(new Media(new File(name).toURI().toString())));
+    }
 
-	
-	void removeSong(int pos, int playing)
+
+    void removeSong(int pos, int playing)
     {
         if (pos == playing)
         {
@@ -30,7 +30,7 @@ public class Playlist
             error.showAndWait();
         }
         else
-            {
+        {
             pl.remove(pos);
             names.remove(pos);
         }
@@ -38,20 +38,20 @@ public class Playlist
 
 
 
-	
-	MediaPlayer currentSong(int i)
-	{
-        return pl.get(i);
-	}
 
-	void removeAll()
+    MediaPlayer currentSong(int i)
+    {
+        return pl.get(i);
+    }
+
+    void removeAll()
     {
         names.clear();
         pl.clear();
     }
 
-	int nSongs()
-	{
-		return pl.size();
-	}
+    int nSongs()
+    {
+        return pl.size();
+    }
 }
