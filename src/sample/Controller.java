@@ -206,11 +206,13 @@ public class Controller {
             error.showAndWait();
 
         }
+        playList.getSelectionModel().select(position);
     }
 
 
     public void setForwardButton(ActionEvent e)
     {
+
         if (e.getSource().equals(forwardButton) && player != null)
         {
             if (player.getStatus().equals(MediaPlayer.Status.PLAYING) || player.getStatus().equals(MediaPlayer.Status.PAUSED))
@@ -229,7 +231,7 @@ public class Controller {
                 this.randomGenerator();
                 this.assign();
                 gotSongTime = true;
-                getTrackInfo();//modificato
+                //getTrackInfo(position);//modificato
             }
             else
             {
@@ -265,6 +267,7 @@ public class Controller {
             error.showAndWait();
 
         }
+        playList.getSelectionModel().select(position);
     }
 
 
@@ -374,15 +377,18 @@ public class Controller {
                 {
                     path = pl.names.get(position);
                     player = pl.currentSong(position);
+                    getTrackInfo(position);
+                    playList.getSelectionModel().select(position);
                 }
                 else
                 {
                     path = pl.names.get(clicked);
                     player = pl.currentSong(clicked);
                     gotSongTime = true;
+                    getTrackInfo(clicked);
+                    playList.getSelectionModel().select(clicked);
                 }
             }
-
             mooved = false;
             System.out.println(path);
             grafica.setPauseIcon(playButton);
@@ -390,7 +396,6 @@ public class Controller {
             setVolume();
             setTrackTime();
             end = false;
-            getTrackInfo();
             player.play();
 
         }
@@ -465,7 +470,7 @@ public class Controller {
         }
     }
 
-    public void getTrackInfo()
+    public void getTrackInfo(int i)
     {
         if (gotSongTime)
         {
@@ -473,7 +478,7 @@ public class Controller {
             totalM = totalS / 60;
             totalS -= totalM * 60;
             gotSongTime=false;
-            System.out.println(position+" dura   "+totalM+":"+totalS);
+            System.out.println(i+" dura   "+totalM+":"+totalS);
 
             if (totalS > 9)
             {
@@ -488,40 +493,40 @@ public class Controller {
         }
 
         //Settiamo i tag sulla UI dopo aver fatto i controlli sui dati ricevuti
-        if (pl.currentSong(position).getMedia().getMetadata().get("image")==null)
+        if (pl.currentSong(i).getMedia().getMetadata().get("image") == null)
             grafica.setTrackImage(trackImage);
         else
-            trackImage.setImage((Image) pl.currentSong(position).getMedia().getMetadata().get("image"));
+            trackImage.setImage((Image) pl.currentSong(i).getMedia().getMetadata().get("image"));
 
-        if(pl.currentSong(position).getMedia().getMetadata().get("artist") == null)
+        if(pl.currentSong(i).getMedia().getMetadata().get("artist") == null)
             artistLabel.setText("Artista: -");
         else
-            artistLabel.setText("Artista: " + pl.currentSong(position).getMedia().getMetadata().get("artist"));
+            artistLabel.setText("Artista: " + pl.currentSong(i).getMedia().getMetadata().get("artist"));
 
-        if (pl.currentSong(position).getMedia().getMetadata().get("title") == null)
+        if (pl.currentSong(i).getMedia().getMetadata().get("title") == null)
             titleLabel.setText("Titolo: -");
         else
-            titleLabel.setText("Titolo: " + pl.currentSong(position).getMedia().getMetadata().get("title"));
+            titleLabel.setText("Titolo: " + pl.currentSong(i).getMedia().getMetadata().get("title"));
 
-        if (pl.currentSong(position).getMedia().getMetadata().get("title") == null)
+        if (pl.currentSong(i).getMedia().getMetadata().get("title") == null)
             titleLabel.setText("Titolo: -");
         else
-            titleLabel.setText("Titolo: " + pl.currentSong(position).getMedia().getMetadata().get("title"));
+            titleLabel.setText("Titolo: " + pl.currentSong(i).getMedia().getMetadata().get("title"));
 
-        if (pl.currentSong(position).getMedia().getMetadata().get("album") == null)
+        if (pl.currentSong(i).getMedia().getMetadata().get("album") == null)
             albumLabel.setText("Album: -");
         else
-            albumLabel.setText("Album: " + pl.currentSong(position).getMedia().getMetadata().get("album"));
+            albumLabel.setText("Album: " + pl.currentSong(i).getMedia().getMetadata().get("album"));
 
-        if (pl.currentSong(position).getMedia().getMetadata().get("genre") == null)
+        if (pl.currentSong(i).getMedia().getMetadata().get("genre") == null)
             genreLabel.setText("Genere: -");
         else
-            genreLabel.setText("Genere: " + pl.currentSong(position).getMedia().getMetadata().get("genre"));
+            genreLabel.setText("Genere: " + pl.currentSong(i).getMedia().getMetadata().get("genre"));
 
-        if (pl.currentSong(position).getMedia().getMetadata().get("year") == null)
+        if (pl.currentSong(i).getMedia().getMetadata().get("year") == null)
             yearLabel.setText("Anno: -");
         else
-            yearLabel.setText("Anno: " + pl.currentSong(position).getMedia().getMetadata().get("year"));
+            yearLabel.setText("Anno: " + pl.currentSong(i).getMedia().getMetadata().get("year"));
     }
 
     private void setVolume()
