@@ -124,10 +124,18 @@ public class Controller {
 
     public void setRemoveAllSongsButton(ActionEvent e)
     {
-        if(e.getSource().equals(removeAllSongsButton) && pl != null)
+        if(e.getSource().equals(repeatButton) && player != null) {
+            if (e.getSource().equals(removeAllSongsButton)) {
+                playList.getItems().clear();
+                pl.removeAll();
+            }
+        }
+        else
         {
-            playList.getItems().clear();
-            pl.removeAll();
+            error = new Alert(Alert.AlertType.ERROR);
+            error.setHeaderText("invalid selection");
+            error.setContentText("impossibile rimuovere brani dalla playlist: la playlist è vuota");
+            error.showAndWait();
         }
     }
 
@@ -148,10 +156,16 @@ public class Controller {
                 error.showAndWait();
             }
 
+
             click = false;
         }
         else
-            System.out.println("impossibile rimuovere canzoni: non ne sono presenti in playlist");
+        {
+            error = new Alert(Alert.AlertType.ERROR);
+            error.setHeaderText("no songs in playlist");
+            error.setContentText("impossibile eliminare brani: non ne sono presenti in playlist");
+            error.showAndWait();
+        }
     }//serve il numero della canzone->da integrare nella parte grafica, quando si seleziona
 
 
@@ -189,6 +203,14 @@ public class Controller {
             }//nel caso in cui posizione == 0->non cambia
 
             this.assign();
+        }
+        else
+        {
+            error = new Alert(Alert.AlertType.WARNING);
+            error.setHeaderText("no songs in playlist");
+            error.setContentText("impossibile tornare al brano precedente: non sono presenti brani in playlist");
+            error.showAndWait();
+
         }
     }
 
@@ -248,27 +270,43 @@ public class Controller {
 
             this.assign();
         }
+        else
+        {
+            error = new Alert(Alert.AlertType.WARNING);
+            error.setHeaderText("no songs in playlist");
+            error.setContentText("impossibile avanzare nella playlist: non sono presenti brani in playlist");
+            error.showAndWait();
+
+        }
     }
 
 
     public void setShuffleButton(ActionEvent e)
     {
-        if (shuffleButton.isSelected() && loopStatus != 1 && playlistOn)
-        {
-            grafica.setShuffleOnIcon(shuffleButton);
-            loopStatus = 2;
-            grafica.setRepeatAllIcon(repeatButton);
-            shuffleOn = shuffleButton.isSelected();
+        if(e.getSource().equals(repeatButton) && player != null) {
+
+
+            if (shuffleButton.isSelected() && loopStatus != 1 && playlistOn) {
+                grafica.setShuffleOnIcon(shuffleButton);
+                loopStatus = 2;
+                grafica.setRepeatAllIcon(repeatButton);
+                shuffleOn = shuffleButton.isSelected();
+            } else {
+                if (shuffleOn) {
+                    loopStatus = 0;
+                    grafica.setShuffleOffIcon(shuffleButton);
+                    grafica.setRepeatOffIcon(repeatButton);
+                    shuffleOn = false;
+                }
+            }
         }
         else
         {
-            if(shuffleOn)
-            {
-                loopStatus = 0;
-                grafica.setShuffleOffIcon(shuffleButton);
-                grafica.setRepeatOffIcon(repeatButton);
-                shuffleOn = false;
-            }
+            error = new Alert(Alert.AlertType.WARNING);
+            error.setHeaderText("no songs in playlist");
+            error.setContentText("impossibile impostare la riproduzione casuale: non sono presenti brani in playlist");
+            error.showAndWait();
+
         }
     }
 
@@ -304,6 +342,14 @@ public class Controller {
                     }
                 }
             }
+        }
+        else
+        {
+            error = new Alert(Alert.AlertType.WARNING);
+            error.setHeaderText("no songs in playlist");
+            error.setContentText("impossibile impostare il loop sui brani: non ne sono presenti in playlist");
+            error.showAndWait();
+
         }
     }
 
@@ -361,7 +407,11 @@ public class Controller {
         {
             if (playList.getItems().isEmpty())
             {
-                System.out.println("Playlist vuota!");
+                    error = new Alert(Alert.AlertType.WARNING);
+                    error.setHeaderText("no songs in playlist");
+                    error.setContentText("impossibile riprodurre brani: non ne sono presenti in playlist");
+                    error.showAndWait();
+
                 return;
             }
             path = pl.names.get(0);
@@ -406,6 +456,14 @@ public class Controller {
                 grafica.setPlayIcon(playButton);
                 stopped = false;
             }
+        }
+        else
+        {
+            error = new Alert(Alert.AlertType.WARNING);
+            error.setHeaderText("no songs in playlist");
+            error.setContentText("impossibile eseguire stop sul brano: non ne sono presenti in playlist");
+            error.showAndWait();
+
         }
     }
 
@@ -617,6 +675,8 @@ public class Controller {
                             {
                                 if(loopStatus != 1)
                                     position = 0;
+                                else
+                                    position = clicked;
 
                                 gotSongTime = true;
                             }
